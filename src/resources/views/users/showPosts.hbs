@@ -1,0 +1,107 @@
+<div class="container mt-4 mb-5 border rounded" style="background-color: white; min-height: 800px;">
+    <div class="text-center mt-4 mb-5">
+        <h2>THÔNG TIN NGƯỜI DÙNG</h2>
+        <hr class="mt-1" style="border-top: 2px solid rgba(0, 0, 0, .1); width: 30%;">
+    </div>
+
+    <div class="mt-4 clearfix" style="width: 100%;">
+
+        {{!-- group menu --}}
+        <div class=" float-left mb-4" style="width: 18%;">
+            <ul class="list-group">
+                <li class="list-group-item ">
+                    <a href="/users/{{user._id}}/info" style="color: #212529; text-decoration: none;">Thông tin tổng quan</a>
+                </li>
+                <li class="list-group-item active">
+                    <a href="#" style="color: white; text-decoration: none;">Thông tin bài đăng</a>
+                </li>
+                <li class="list-group-item">
+                    <a href="/users/{{user._id}}/create" style="color: #212529; text-decoration: none;">Tạo bài đăng mới</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="border rounded float-right mb-4" style="width: 80%;">
+            <div class="container m-2">
+                <div class="mt-4">
+                    <h3 class="text-center">Bài đăng của tôi</h3>
+                    <table class="table mt-4 text-center">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Tên bài đăng</th>
+                                <th scope="col">Trạng thái</th>
+                                <th scope="col">Thời gian tạo</th>
+                                <th scope="col"></th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each posts}}
+                            <tr>
+                                <th scope="row">{{sum @index 1}}</th>
+                                <td>
+                                    <a href="/posts/{{this._id}}" style="text-decoration: none;">{{this.title}}</a>
+                                    
+                                    </td>
+                                <td style= "color: {{#checkStatus this.status}}{{/checkStatus}};" >
+                                    {{this.status}}
+                                </td>
+                                <td>{{this.updatedAt}}</td>
+                                <td>
+                                    <a href="/posts/{{this._id}}/edit" class="btn btn-link">Sửa</a>
+                                </td>
+                                <td>
+                                    <a href="" class="btn btn-link" data-id="{{this._id}}" data-toggle="modal" data-target="#delete-post-modal">Xóa</a>
+                                </td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+
+                <form method="POST" name="delete-post-form"></form>
+
+                    <div id="delete-post-modal" class="modal" tabindex="-1" role="dialog">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Xóa bài đăng?</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Bạn chắc chắn muốn xóa bài đăng này?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button id="btn-delete-post" type="button" class="btn btn-danger ">Xóa bỏ</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            var postID;
+                            var deleteForm = document.forms['delete-post-form'];
+
+                            $('#delete-post-modal').on('show.bs.modal', function (event) {
+                                var button = $(event.relatedTarget);
+                                postID = button.data('id');
+                            })
+
+                            let btnDeletePost = document.getElementById('btn-delete-post');
+                            btnDeletePost.onclick = function () {
+                                deleteForm.action = '/posts/' + postID + '?_method=DELETE';
+                                deleteForm.submit();
+                            }
+                        });
+                    </script>
+
+            </div>
+        </div>
+
+    </div>
+</div>

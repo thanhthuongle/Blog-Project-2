@@ -1,0 +1,137 @@
+<div class="mt-4 clearfix" style="margin: 6rem;">
+    <div class="float-left" style="width: 70%; margin-right: 10px;">
+        <div class="mt-1 clearfix" style="background-color: #f8f9fa;">
+            <div class="dropdown  dropright float-left" style="width: fit-content; margin-left: 16px;">
+                <button class="btn btn-primary dropdown-toggle mt-2" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Sort
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="min-width:6rem;">
+                    {{!-- <a class="dropdown-item" href="#"></a> --}}
+                    <form action="" method="GET" name="sort">
+                        <input type="hidden" id="sortValue" name="sort" value="">
+                        <input type="hidden" id="searchValue" {{#if q}} name="q"  value="{{q}}" {{/if}}>
+                        <button class="dropdown-item p-1 text-center" onclick="setValueAndSubmit(value)" value="date">Date</button>
+                        <button class="dropdown-item p-1 text-center" onclick="setValueAndSubmit(value)" value="like">Like</button>  
+                    </form>
+                </div>
+            </div>
+
+            <nav class="navbar navbar-light bg-light float-right rounded" >
+                <form class="form-inline">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="q" >
+                    <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>
+                </form>
+            </nav>
+        </div>
+        <div class="row">
+            {{#each posts}}
+            <div class="col-sm-2 col-lg-4">
+                <div class="card" style="width: 18rem; margin-top: 16px;">
+                    <a href="/posts/{{this._id}}">
+                        <img class="card-img-top" src="{{this.thumbnail}}" alt="{{this.title}}" style="height: 160px;">
+                    </a>
+                    <div class="card-body">
+                        <a href="/posts/{{this._id}}" style="text-decoration: none;">
+                            <h5 class="card-title">{{this.title}}</h5>
+                        </a>
+                        <p class="card-text">{{this.description}}</p>
+                        <a href="/posts/{{this._id}}" class="btn btn-primary">Đọc bài viết</a>
+                    </div>
+                </div>
+            </div>
+            {{/each}}  
+        </div>
+
+        {{!-- phân trang --}}
+        <nav aria-label="Page navigation example">
+            <ul class="pagination mt-5" style="margin-bottom: 80px;">
+                {{#if noHome}}
+                <li class="page-item"><a class="page-link" href="/page/{{#diff checkPage 1}}{{/diff}}/{{holdQuery}}">Previous</a></li>
+                {{/if}}
+                {{#each page}}
+                <li class="page-item" ><a class="page-link" href='/page/{{this.ind}}/{{this.holdQuery}}'>{{this.ind}}</a></li>
+                {{/each}}
+                <li class="page-item"><a class="page-link" href="/page/{{#sum checkPage 1}}{{/sum}}/{{holdQuery}}">Next</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    {{!-- group About me --}}
+    <div class="float-right mt-3 rounded" style="width: 25%;  background-color: white; padding: 10px;">
+        <aside>
+            <h4 class="border-bottom border-dark">ABOUT ME</h4>
+            <img src="/image/avatarAdmin.jpg" alt="Avatar admin" class="rounded-circle mx-auto d-block mt-3" style="width: 90%; height:auto; aspect-ratio: 1/1;">
+            <h2 class="text-center mt-4" style="font-size: 20px;">Lê Thanh Thương 20215485</h2>
+            <hr class="border-info" style="width: 50%;margin-top: -3px; border-width: 1.8px;">
+            <p class="text-center">
+                <a href="https://hust.edu.vn/" target="_blank">
+                    <strong> Hanoi University <br>of Science and Technology</strong>
+                </a>
+            </p>
+        </aside>
+        <aside  style="margin-top: 4rem; ">
+            <h4 class="border-bottom border-dark mb-4">CONTACT ME</h4>
+            <div class="row" style="width: 100%; font-size: 20px;">
+                <div class="col-6">
+                    <a href="https://www.facebook.com/lethanhthuongldp" title="my facebook account" target="_blank" style="text-decoration: none;">
+                        <img src="/image/facebookIcon.png" alt="" style="width: 20%; height:auto; aspect-ratio: 1/1; ">
+                        <span class="ml-1 align-middle">Facebook</span>
+                    </a>
+                </div>
+                <div class="col-6">
+                    <a href="#" title="my instagram account" target="_blank" style="text-decoration: none;">
+                        <img src="/image/instagramIcon.png" alt="" style="width: 20%; height:auto; aspect-ratio: 1/1; ">
+                        <span class="ml-1 align-middle">Instagram</span>
+                    </a>
+                </div>
+            </div>
+            <div class="row mt-3" style="width: 100%; font-size: 20px;">
+                <div class="col-6">
+                    <a href="#" title="my Linkedin account" target="_blank" style="text-decoration: none;">
+                        <img src="/image/linkedinIcon.png" alt="" style="width: 22%; height:auto; aspect-ratio: 1/1; ">
+                        <span class="ml-1 align-middle">Linkedin</span>
+                    </a>
+                </div>
+                <div class="col-6">
+                    <a href="mailto:lethanhthuongldp@gmail.com" title="my facebook account" target="_blank" style="text-decoration: none;">
+                        <img src="/image/mailIcon.png" alt="" style="width: 20%; height:auto; aspect-ratio: 1/1; ">
+                        <span class="ml-1 align-middle">Mail</span>
+                    </a>
+                </div>
+            </div>
+            <div class="row mt-3" style="width: 100%; font-size: 20px;">
+                <div class="col-6">
+                    <a href="https://github.com/thanhthuongle" title="my github account" target="_blank" style="text-decoration: none;">
+                        <img src="/image/githubIcon.png" alt="" style="width: 20%; height:auto; aspect-ratio: 1/1; ">
+                        <span class="ml-1 align-middle">Github</span>
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <aside class="mt-5 mb-2 text-center">
+            <b style="color: #007BFF;">HAVE A NICE DAY!</b>
+        </aside>
+    </div>
+</div>
+
+
+<script>
+    function setValueAndSubmit(value) {
+        // Set the sort value
+        document.getElementById("sortValue").value = value;
+
+        // Get the current search value from the search input
+        const searchInput = document.querySelector('input[name="q"]');
+        if (searchInput) {
+            const searchValue = searchInput.value;
+            document.getElementById("searchValue").value = searchValue;
+        }
+
+        // Submit the sort form
+        document.forms['sort'].submit();
+    }
+</script>
+
+
+

@@ -1,0 +1,101 @@
+<div class="container border rounded mt-4 mb-5" style="background-color: white;">
+
+    {{!-- group show post detail! --}}
+    <div class="border-bottom">
+        <h1 class="text-center mt-4 mb-4">{{post.title}}</h1>
+        <h6>
+                <span>
+                    Author:&nbsp;{{user.name}}
+                </span>
+                
+                <span class="ml-2">
+                    | &nbsp;Date:
+                    {{post.createdAt}}
+                </span>
+        </h6>
+        <br>
+        <div class="text-center" >
+            <img style="width: 100%; height: auto; max-height: 450px;" src="{{post.thumbnail}}" alt="">
+        </div>
+        <div class="mt-4 text-wrap" >
+            <p style="white-space: pre-line;">
+                {{post.content}}
+            </p>
+        </div>
+    </div>
+
+{{!-- group like, share, comment --}}
+    <div class="text-center mt-4" style="margin-bottom: 1rem; background-color: white;">
+        <div class="row ">
+            <div class="col-4">Like:&nbsp; <span>{{post.like}}</span> </div>
+            <div class="col-4">Comment:&nbsp; <span>{{post.comment}}</div>
+            <div class="col-4">Share:&nbsp; <span>{{post.share}}</div>
+        </div>
+
+        <hr>
+
+        <div class="row mt-1">
+            <div class="col-4">
+                <button type="button" class="btn btn-light" style="width: 70%;">
+                    <img src="/image/likeIcon.png" alt="" style="width:20px; height:auto;">
+                    <span class="align-middle">Thích</span>   
+                </button>
+            </div>
+            <div class="col-4">
+                <button type="button" class="btn btn-light" style="width: 70%;">
+                    <img src="/image/commentIcon.png" alt="" style="width:20px; height:auto;">
+                    <span class="align-middle">Bình luận</span>   
+                </button>
+            </div>
+            <div class="col-4">
+                <button type="button" class="btn btn-light" style="width: 70%; ">
+                    <img src="/image/shareIcon.png" alt="" style="width:20px; height:auto;">
+                    <span class="align-middle">Chia sẻ</span>   
+                </button>
+            </div>
+        </div>
+
+        <hr>
+    </div>
+
+{{!-- group user view comment --}}
+    <div>
+        <b>
+            <a href="#" class="link-secondary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Xem thêm bình luận</a>
+        </b>
+        <div class="mb-4">
+            <div class="border rounded mt-3" style="width: 100%; background-color: #E4E6EB;">
+                <div class="mt-2 ml-2 mr-2">
+                    <img src="/image/avatarAdmin.jpg" alt="" class="rounded-circle " style="width: 30px; height: 30px; ">
+                    <b class="align-middle">Sứ giả hòa bình</b>
+                </div>
+                <p class="pt-3 pl-2 pr-2 pb-1">
+                    bình luận bài viết đầu tiên!! bình luận bài viết đầu tiên!!bình luận bài viết đầu tiên!!bình luận bài viết đầu tiên!!bình luận bài viết đầu tiên!!
+                </p>
+            </div>
+        </div>  
+    </div>
+
+{{!-- group user write comment! --}}
+    <div class="mt-5 mb-5">
+        <form>
+            <div class="form-group clearfix" >
+                <div class="float-left " style="width: 6%;">
+                    <img src="/image/avatarAdmin.jpg" class="rounded-circle" alt="" style="width: 50px; height: 50px;">
+                </div>
+                <div class="float-left" style="width: 94%;"> 
+                    <textarea class="form-control" id="comment" rows="3" style="background-color: #E4E6EB;"></textarea>
+                    <button type="submit" class="btn btn-secondary mr-4" style="margin-top: 0.8rem;" value="cancle" name="cancle">
+                        Hủy
+                    </button>
+                    <button type="submit" class="btn btn-light mr-4" style="margin-top: 0.8rem; background-color:#E4E6EB;" value="ok" name="ok">
+                        Bình luận
+                        <img src="/image/sendIcon.png" alt="" style="width: 20px; height: 20px; margin-left: 5px;" class="text-center align-middle mx-auto">     
+                    </button>
+                    
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
