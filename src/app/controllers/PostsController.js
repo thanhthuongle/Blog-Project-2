@@ -1,5 +1,7 @@
 const Post = require('../models/Post');
 const User = require('../models/User');
+const Like = require('../models/Like');
+const Comment = require('../models/Comment');
 const UserLocalStorage = require('../../config/acc/account');
 const { mongooseToObject } = require('../../util/mongoose');
 const {mutipleMongooseToObject} = require('../../util/mongoose');
@@ -7,12 +9,46 @@ const {mutipleMongooseToObject} = require('../../util/mongoose');
 class PostsController{
     // [GET] /posts/{{this._id}}
     async show(req, res, next){
-        try{
+        try{ 
+            let likeStatus;
+            if(await Like.findOne({postID: req.params.id, userID: UserLocalStorage.ID}))
+                likeStatus = true;
+            else
+                likeStatus = false;
             const user = await User.findById({_id: UserLocalStorage.ID});
             const post = await Post.findById({_id: req.params.id});
+            const comments = await Comment.aggregate([
+                {
+                    $match: {postID: req.params.id}
+                },
+                {
+                    $addFields: {
+                        userID: { $toObjectId: '$userID' } // Chuyển đổi kiểu dữ liệu của userID sang ObjectId
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'userID',
+                        foreignField: '_id',
+                        as: 'userComment',
+                    }
+                },
+                {
+                    $project:{
+                        'userComment.avatar': 1,
+                        'userComment.name': 1,
+                        'contentComment': 1,
+                        '_id': 0,
+                    }
+                }
+            ]);
             res.render('posts/readPost', {
+                comments: comments,
                 user: mongooseToObject(user),
                 post: mongooseToObject(post),
+                likeStatus: likeStatus,
+                
             })
         }catch(err){
             next(err);
@@ -24,6 +60,8 @@ class PostsController{
     store(req, res, next){
         const userID = UserLocalStorage.ID;
         const post = new Post(req.body);
+        const content = stripHtml(post.contentHtml);
+        post.content = content;
         let postStatus = false;
         User.findById({_id: userID})
             .then(user => {
@@ -76,7 +114,9 @@ class PostsController{
     async update(req, res, next){
         try {
             const user = await User.findOne({_id: UserLocalStorage.ID});
-            await Post.updateOne({_id: req.params.id, userID: UserLocalStorage.ID}, req.body);
+            let dataModify = req.body;
+            dataModify.content = stripHtml(dataModify.contentHtml);
+            await Post.updateOne({_id: req.params.id, userID: UserLocalStorage.ID}, dataModify);
             const posts = await Post.find({userID: UserLocalStorage.ID});
             res.render('users/showPosts', {
                 user: mongooseToObject(user),
@@ -118,6 +158,10 @@ class PostsController{
             next(error);
         }
     }
+}
+
+function stripHtml(html) {
+    return html.replace(/<[^>]*>?/gm, ''); // Loại bỏ các tag HTML để lấy dữ liệu dưới dạng text
 }
 
 module.exports = new PostsController; 

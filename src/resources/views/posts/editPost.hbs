@@ -1,26 +1,34 @@
 
-<div class=" container rounded mt-4 border  " style="background-color: white;">
+<script src="/tinymce/tinymce.min.js"></script>
+<script type="text/javascript">
+  tinymce.init({
+    selector: '#contentHtml'
+  });
+</script>
+
+<div class=" container rounded mt-4 border mb-5 " style="background-color: white;">
     <div class=" text-center mt-4">
         <h3>CẬP NHẬT BÀI ĐĂNG</h3>
     </div>
 
-    <form class="mt-4 mb-5" method="POST" action="/posts/{{post._id}}?_method=PUT">
+    <form class="mt-4 mb-4" method="POST" action="/posts/{{post._id}}?_method=PUT">
         <div class="form-group">
-            <label for="title">Tiêu đề bài đăng</label>
+            <label for="title">Tiêu đề bài đăng <inline style="color: red;">(*)</inline></label>
             <input type="text" class="form-control" id="title" name="title" value="{{post.title}}">
         </div>
         <div class="form-group">
-            <label for="description">Mô tả</label>
+            <label for="description">Mô tả <inline style="color: red;">(*)</inline></label>
             <input type="text" class="form-control" id="description" name="description" value="{{post.description}}">
         </div>
         <div class="form-group">
-            <label for="thumbnail">URL Ảnh đại diện</label>
+            <label for="thumbnail">URL Ảnh đại diện <inline style="color: red;">(*)</inline></label>
             <input type="text" class="form-control" id="thumbnail" name="thumbnail" value="{{post.thumbnail}}">
         </div>
         <div class="form-group">
-            <label for="content">Nội dung</label>
-            <textarea class="form-control" id="content" name="content"  rows="10">{{post.content}}</textarea>
+            <label for="content">Nội dung <inline style="color: red;">(*)</inline></label>
+            <textarea class="form-control" id="contentHtml" name="contentHtml"  rows="10">{{post.contentHtml}}</textarea>
         </div>
         <button type="submit" class="btn btn-primary">Lưu lại</button>
     </form>
+    <p class="mb-4"><inline style="color: red;">Chú ý: </inline>Người dùng bắt buộc phải cung cấp thông tin đối với các trường có  <inline style="color: red;">(*)</inline></p>
 </div>

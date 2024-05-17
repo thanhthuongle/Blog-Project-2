@@ -16,6 +16,7 @@
     "method-override": "^3.0.0",
     "mongoose": "^8.3.3",
     "node-localstorage": "^3.0.5",
-    "nodemon": "^3.1.0"
+    "nodemon": "^3.1.0",
+    "tinymce": "^7.1.0"
   }
 }

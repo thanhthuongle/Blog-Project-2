@@ -1,3 +1,11 @@
+
+<script src="/tinymce/tinymce.min.js"></script>
+<script type="text/javascript">
+  tinymce.init({
+    selector: '#contentHtml'
+  });
+</script>
+
 <div class="float-right clearfix">
     <p id="notification" class="alert mt-5 mr-2 pl-5 pr-5 invisible" role="alert" style="z-index:; ">
         Tạo bài viết thành công!
@@ -30,24 +38,25 @@
                     <h3 class="text-center " >Tạo bài đăng mới</h3>
                     <form method="POST" action="/posts/store">
                         <div class="form-group">
-                            <label for="title">Tiêu đề bài đăng</label>
-                            <input type="text" class="form-control" id="title" name="title">
+                            <label for="title">Tiêu đề bài đăng <inline style="color: red;">(*)</inline></label>
+                            <input type="text" class="form-control" id="title" name="title" required>
                         </div>
                         <div class="form-group">
-                            <label for="description">Mô tả</label>
-                            <input type="text" class="form-control" id="description" name="description">
+                            <label for="description">Mô tả <inline style="color: red;">(*)</inline></label>
+                            <input type="text" class="form-control" id="description" name="description" required>
                         </div>
                         <div class="form-group">
-                            <label for="thumbnail">URL Ảnh đại diện</label>
-                            <input type="text" class="form-control" id="thumbnail" name="thumbnail">
+                            <label for="thumbnail">URL Ảnh đại diện <inline style="color: red;">(*)</inline></label>
+                            <input type="text" class="form-control" id="thumbnail" name="thumbnail" required>
                         </div>
                         <div class="form-group">
-                            <label for="content">Nội dung</label>
-                            <textarea class="form-control" id="content" name="content" rows="10"> </textarea>
+                            <label for="content">Nội dung <inline style="color: red;">(*)</inline></label>
+                            <textarea class="form-control" id="contentHtml" name="contentHtml" rows="10" placeholder="Nội dung bài đăng" required></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary" >Tạo bài đăng</button>
                     </form>
                 </div>
+                <p class="mt-4"><inline style="color: red;">Chú ý: </inline>Người dùng bắt buộc phải cung cấp thông tin đối với các trường có  <inline style="color: red;">(*)</inline></p>
             </div>
         </div>
     </div>
@@ -76,3 +85,5 @@
     {{/if}}
 
 </script>
+
+

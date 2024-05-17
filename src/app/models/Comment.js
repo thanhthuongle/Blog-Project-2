@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const Comment = new Schema({
     postID: String,
     userID: String,
-    content: String,
+    contentComment: String,
     // parentCommentID
 }, {
     timestamps: true,

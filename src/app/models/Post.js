@@ -8,6 +8,7 @@ const Post = new Schema({
     title: String,
     description: String,
     content: String,
+    contentHtml: String,
     like: {type: Number, default: 0},
     share: {type: Number, default: 0},
     comment: {type: Number, default: 0},

@@ -30,7 +30,7 @@
                             <tr>
                                 <th scope="col">#</th>
                                 <th scope="col">Tên bài đăng</th>
-                                <th scope="col">Trạng thái</th>
+                                <th scope="col" style="min-width: 110px;">Trạng thái</th>
                                 <th scope="col">Thời gian tạo</th>
                                 <th scope="col"></th>
                                 <th scope="col"></th>
@@ -44,8 +44,8 @@
                                     <a href="/posts/{{this._id}}" style="text-decoration: none;">{{this.title}}</a>
                                     
                                     </td>
-                                <td style= "color: {{#checkStatus this.status}}{{/checkStatus}};" >
-                                    {{this.status}}
+                                <td style= "color: {{#checkColorStatus this.status}}{{/checkColorStatus}};" >
+                                    {{#checkStatus this.status}}{{/checkStatus}}
                                 </td>
                                 <td>{{this.updatedAt}}</td>
                                 <td>

@@ -23,10 +23,15 @@ app.engine('hbs', handlebars.engine({
     helpers: {
         sum: (a, b) => a + b,
         diff: (a, b) => a - b,
-        checkStatus: (a) => {
+        checkColorStatus: (a) => {
             if(a == 'approved') return 'rgb(9, 207, 9)';
             else if(a == 'pending') return 'rgb(201, 201, 8)';
             else return 'rgb(183, 12, 12)';
+        },
+        checkStatus: (a) => {
+            if(a == 'approved') return 'Đã duyệt';
+            else if(a == 'pending') return 'Chờ duyệt';
+            else return 'Từ chối';
         },
     },
 }));
