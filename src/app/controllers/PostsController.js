@@ -121,7 +121,7 @@ class PostsController{
             res.render('users/showPosts', {
                 user: mongooseToObject(user),
                 posts: mutipleMongooseToObject(posts),
-            });
+            }); 
         } catch (error) {
             next(error);
         }
