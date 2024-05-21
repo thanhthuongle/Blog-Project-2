@@ -33,6 +33,15 @@ app.engine('hbs', handlebars.engine({
             else if(a == 'pending') return 'Chờ duyệt';
             else return 'Từ chối';
         },
+        managerCheckStatus: (a) => {
+            if(a == 'approved') return 'Bài đăng đã duyệt';
+            else if(a == 'pending') return 'Bài đăng đang chờ duyệt';
+            else return 'Bài đăng đã từ chối';
+        },     
+        checkRoleAdmin: (a) => {
+            if(a == 'user') return true; // a đại diện cho tên của người quản lý
+            else return false;
+        },
     },
 }));
 app.set('view engine', 'hbs');

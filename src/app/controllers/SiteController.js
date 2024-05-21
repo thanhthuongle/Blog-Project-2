@@ -42,7 +42,7 @@ class SiteController{
         }
         Promise.all([
             User.findById({_id: userId}),
-            Post.find(conditionFind).skip(0).limit(page_size).sort(conditionSort),
+            Post.find(conditionFind).skip(0).limit(page_size).sort(conditionSort), // todo: check lại thông số skip() 
         ]).then(([user, posts]) => {
             // console.log(posts);
             res.render('home', {

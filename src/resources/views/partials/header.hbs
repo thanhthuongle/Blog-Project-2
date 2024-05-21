@@ -17,6 +17,10 @@
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="/users/{{user._id}}/create">Tạo bài viết mới</a> 
                 <div class="dropdown-divider"></div>
+                {{#if (checkRoleAdmin user.role) }}
+                <a class="dropdown-item" href="/managers/pendingPost" style="color: rgb(0, 4, 255);">Trang quản lý</a>
+                <div class="dropdown-divider"></div>
+                {{/if}}
                 <a class="dropdown-item" href="">Đăng xuất</a>
 
                 </div>

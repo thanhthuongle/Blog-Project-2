@@ -13,6 +13,9 @@ const Post = new Schema({
     share: {type: Number, default: 0},
     comment: {type: Number, default: 0},
     status: {type: String, default: 'pending'}, // pending, approved, rejected
+    reviewerID: String, // thuộc tính tồn tại khi bài viết đã được xem xét
+    reviewerName: String, // thuộc tính tồn tại khi bài viết đã được xem xét
+    reviewTime: Date, // thuộc tính tồn tại khi bài viết đã được xem xét
 }, {
     timestamps: true,
    })
