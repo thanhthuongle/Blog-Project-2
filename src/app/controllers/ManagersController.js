@@ -146,6 +146,8 @@ class ManagersController{
             const post = await Post.findOne({_id: req.params.postID});
             const manager = await User.findOne({_id: req.params.managerID});
             const user = await User.findOne({_id: post.userID});
+            let resApprove = false, approveStatus = false;
+            let status = 'pending';
             if(post.status == 'pending'){
                 post.status = 'approved';
                 user.approvedPost += 1;
@@ -156,7 +158,48 @@ class ManagersController{
                 await post.save();
                 await user.save();
             }
-            res.redirect('/managers/pendingPost');
+            if(post.status == 'approved'){
+                resApprove = true;
+                approveStatus = true;
+            } else if(post.status == 'pending'){
+                resApprove = true;
+                approveStatus = false;
+            }
+            
+            const posts = await Post.aggregate([
+                {
+                    $match: {status: 'pending'}
+                },
+                {
+                    $addFields: {
+                        userID: { $toObjectId: '$userID' } // Chuyển đổi kiểu dữ liệu của userID sang ObjectId
+                    }
+                }, 
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'userID',
+                        foreignField: '_id',
+                        as: 'userPost',
+                    }
+                },
+                {
+                    $project: {
+                        'title': 1,
+                        '_id': 1,
+                        'status': 1,
+                        'createdAt': 1,
+                        'userPost.name': 1,
+                    }
+                }
+            ])
+            res.render('managers/pendingPost', {
+                posts: mutipleMongooseToObject(posts),
+                user: mongooseToObject(user),
+                status: status,
+                resApprove: resApprove,
+                approveStatus: approveStatus,
+            });
         }catch(error){
             next(error);
         }
@@ -169,6 +212,8 @@ class ManagersController{
             const post = await Post.findOne({_id: req.params.postID});
             const manager = await User.findOne({_id: req.params.managerID});
             const user = await User.findOne({_id: post.userID});
+            let resReject = false, rejectStatus = false;
+            let status = 'pending';
             if(post.status == 'pending'){
                 post.status = 'rejected';
                 user.rejectedPost += 1;
@@ -179,7 +224,48 @@ class ManagersController{
                 await post.save();
                 await user.save();
             }
-            res.redirect('/managers/pendingPost');
+            if(post.status == 'rejected'){
+                resReject = true;
+                rejectStatus = true;
+            } else if(post.status == 'pending'){
+                resReject = true;
+                rejectStatus = false;
+            }
+            
+            const posts = await Post.aggregate([
+                {
+                    $match: {status: 'pending'}
+                },
+                {
+                    $addFields: {
+                        userID: { $toObjectId: '$userID' } // Chuyển đổi kiểu dữ liệu của userID sang ObjectId
+                    }
+                }, 
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'userID',
+                        foreignField: '_id',
+                        as: 'userPost',
+                    }
+                },
+                {
+                    $project: {
+                        'title': 1,
+                        '_id': 1,
+                        'status': 1,
+                        'createdAt': 1,
+                        'userPost.name': 1,
+                    }
+                }
+            ])
+            res.render('managers/pendingPost', {
+                posts: mutipleMongooseToObject(posts),
+                user: mongooseToObject(user),
+                status: status,
+                resReject: resReject,
+                rejectStatus: rejectStatus,
+            });
         }catch(error){
             next(error);
         }

@@ -1,6 +1,13 @@
+
+<div class="float-right clearfix " style="">
+    <p id="notification" class="alert mt-5 mr-2 pl-5 pr-5 invisible" role="alert">
+        Duyệt bài đăng thành công!&nbsp;
+    </p>
+</div>
+
 <div class="container mt-4 border rounded" style="background-color: white;">
     <div class="text-center mt-4 mb-5">
-        <h2>TRANG QUẢN LÝ</h2>
+        <h2 style="margin-left: 100px;">TRANG QUẢN LÝ</h2>
         <hr class="mt-1" style="border-top: 2px solid rgba(0, 0, 0, .1); width: 30%;">
     </div>
     <div class="mt-4 ml-2">
@@ -17,7 +24,7 @@
 
     <div class="container border rounded m-2">
         <div class="mt-4">
-            <h3 class="text-center">{{#managerCheckStatus status}}{{/managerCheckStatus}}</h3>
+            <h3 class="text-center" style="color: rgb(201, 201, 8);">{{#managerCheckStatus status}}{{/managerCheckStatus}}</h3>
             <table class="table mt-4 text-center table-striped">
                 <thead>
                     <tr>
@@ -27,6 +34,7 @@
                         <th scope="col" style="min-width: 110px;">Trạng thái</th>
                         <th scope="col">Thời gian tạo</th>
                         <th scope="col" colspan="2">Xét duyệt</th>
+                        <th scope="col">Xóa bài</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -41,12 +49,19 @@
                         <td style= "color: {{#checkColorStatus this.status}}{{/checkColorStatus}};" >
                             {{#checkStatus this.status}}{{/checkStatus}}
                         </td>
-                        <td>{{this.createdAt}}</td>
+                        <td>
+                            {{formatTime this.createdAt}}
+                            <br>
+                            {{formatDate this.createdAt}}
+                        </td>
                         <td>
                              <a href="" class="btn btn-success" data-id="{{this._id}}" data-toggle="modal" data-target="#aprrove-post-modal">Duyệt</a>
                         </td>
                         <td>
                             <a href="" class="btn btn-danger" data-id="{{this._id}}" data-toggle="modal" data-target="#reject-post-modal">Từ Chối</a>
+                        </td>
+                        <td>
+                            <a href="" class="btn btn-outline-danger" data-id="{{this._id}}" data-toggle="modal" data-target="#">Xóa</a>
                         </td>
                     </tr>
                     {{/each}}
@@ -127,3 +142,36 @@
         </div>
     </div>
 </div>
+
+<script>
+    function showNotification(alerClass, message, duration) {
+        let notification = document.getElementById("notification");
+        notification.innerHTML = message;
+        notification.classList.add(alerClass);
+        notification.classList.remove("invisible");
+        notification.style.display = "block";
+        setTimeout(function(){
+            notification.classList.add("invisible");
+            notification.classList.remove(alerClass);
+            {{!-- notification.style.display = "none"; --}}
+        }, duration);
+    }
+
+    {{#if resApprove}}
+        {{#if approveStatus}}
+            showNotification("alert-success","Duyệt bài đăng thành công!&nbsp;",3000);
+        {{else}}
+            showNotification("alert-danger", "Duyệt bài đăng thất bại!!!&nbsp;",3000);
+        {{/if}}
+    {{/if}}
+
+    {{#if resReject}}
+        {{#if rejectStatus}}
+            showNotification("alert-success","Từ chối bài đăng thành công!",3000);
+        {{else}}
+            showNotification("alert-danger", "Từ chối bài đăng thất bại!!!",3000);
+        {{/if}}
+    {{/if}}
+
+
+</script>

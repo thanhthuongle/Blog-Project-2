@@ -20,7 +20,7 @@
                 
                 <span class="ml-2">
                     | &nbsp;Date:
-                    {{post.createdAt}}
+                    {{formatDateTime post.createdAt}}
                 </span>
         </h6>
         <br>
@@ -44,7 +44,7 @@
         <div class="row ">
             <div class="col-4">Like:&nbsp; <span>{{post.like}}</span> </div>
             <div class="col-4">Comment:&nbsp; <span>{{post.comment}}</div>
-            <div class="col-4">Share:&nbsp; <span>{{post.share}}</div>
+            <div class="col-4">{{!--Share:&nbsp;--}} <span>{{!--{{post.share}}--}} Chia sẻ ngay</div>
         </div>
 
         <hr>
@@ -113,7 +113,7 @@
         <form method="POST" action="/comments/{{post._id}}/{{user._id}}">
             <div class="form-group clearfix" >
                 <div class="float-left " style="width: 6%;">
-                    <img src="/image/avatarAdmin.jpg" class="rounded-circle" alt="" style="width: 50px; height: 50px;">
+                    <img src="{{user.avatar}}" class="rounded-circle" alt="" style="width: 50px; height: 50px;">
                 </div>
                 <div class="float-left" style="width: 94%;"> 
                     <input type="hidden" name="userID" value="{{user._id}}">

@@ -23,9 +23,9 @@
                 </form>
             </nav>
         </div>
-        <div class="row">
+        <div class="row ">
             {{#each posts}}
-            <div class="col-sm-2 col-lg-4">
+            <div class="col-lg-6 col-xl-4">
                 <div class="card" style="width: 18rem; margin-top: 16px;">
                     <a href="/posts/{{this._id}}">
                         <img class="card-img-top" src="{{this.thumbnail}}" alt="{{this.title}}" style="height: 160px;">
@@ -46,10 +46,10 @@
         <nav aria-label="Page navigation example">
             <ul class="pagination mt-5" style="margin-bottom: 80px;">
                 {{#if noHome}}
-                <li class="page-item"><a class="page-link" href="/page/{{#diff checkPage 1}}{{/diff}}/{{holdQuery}}">Previous</a></li>
+                <li class="page-item"><a class="page-link" {{#if (checkPageHome (diff checkPage 1))}}href="/{{holdQuery}}"{{else}}href="/page/{{#diff checkPage 1}}{{/diff}}/{{holdQuery}}"{{/if}}>Previous</a></li>
                 {{/if}}
                 {{#each page}}
-                <li class="page-item" ><a class="page-link" href='/page/{{this.ind}}/{{this.holdQuery}}'>{{this.ind}}</a></li>
+                <li class="page-item" ><a class="page-link" {{#if (checkPageHome this.ind)}}href='/{{this.holdQuery}}'{{else}}href='/page/{{this.ind}}/{{this.holdQuery}}'{{/if}} >{{this.ind}}</a></li>
                 {{/each}}
                 <li class="page-item"><a class="page-link" href="/page/{{#sum checkPage 1}}{{/sum}}/{{holdQuery}}">Next</a></li>
             </ul>

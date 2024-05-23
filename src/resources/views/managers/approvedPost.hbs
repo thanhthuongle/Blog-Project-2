@@ -17,7 +17,7 @@
 
     <div class="container border rounded m-2">
         <div class="mt-4">
-            <h3 class="text-center">{{#managerCheckStatus status}}{{/managerCheckStatus}}</h3>
+            <h3 class="text-center" style="color: rgb(9, 207, 9);">{{#managerCheckStatus status}}{{/managerCheckStatus}}</h3>
             <table class="table mt-4 text-center table-striped">
                 <thead>
                     <tr>
@@ -26,8 +26,9 @@
                         <th scope="col" style="min-width: 115px;">Người đăng</th>
                         <th scope="col" style="min-width: 110px;">Trạng thái</th>
                         <th scope="col">Thời gian tạo</th>
-                        <th scope="col">Người duyệt</th>
-                        <th scope="col">Thời gian duyệt</th>
+                        <th scope="col" style="min-width: 120px;">Người duyệt</th>
+                        <th scope="col" >Thời gian duyệt</th>
+                        <th scope="col" >Xóa bài</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -42,12 +43,21 @@
                         <td style= "color: {{#checkColorStatus this.status}}{{/checkColorStatus}};" >
                             {{#checkStatus this.status}}{{/checkStatus}}
                         </td>
-                        <td>{{this.createdAt}}</td>
+                        <td>
+                            {{formatTime this.createdAt}}
+                            <br>
+                            {{formatDate this.createdAt}}
+                        </td>
                         <td>
                             {{this.reviewerName}}
                         </td>
                         <td>
-                            {{this.reviewTime}}
+                            {{formatTime this.reviewTime}}
+                            <br>
+                            {{formatDate this.reviewTime}}
+                        </td>
+                        <td>
+                            <a href="" class="btn btn-outline-danger" data-id="{{this._id}}" data-toggle="modal" data-target="#">Xóa</a>
                         </td>
                     </tr>
                     {{/each}}

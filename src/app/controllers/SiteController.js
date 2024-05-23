@@ -5,7 +5,7 @@ const UserLocalStorage = require('../../config/acc/account');
 const { mongooseToObject } = require('../../util/mongoose');
 const { mutipleMongooseToObject } = require('../../util/mongoose');
 const { query } = require('express');
-const page_size = 9;
+const page_size = 12;
 
  
 
@@ -15,12 +15,13 @@ class SiteController{
     async index(req, res, next){
         // console.log(req.query);
         const q = req.query.q;
-        const sort = req.query.sort;
+        let sort = req.query.sort;
+        if(sort == 'date') sort = 'createdAt';
         let holdQuery = '';
         let conditionFind ={}, conditionSort={};
 
         if(q){
-            conditionFind = { $text: { $search: q } };
+            conditionFind = { $text: { $search: q }};
             if(sort){
                 conditionSort = {score: { $meta: "textScore" }, [sort]: -1};
                 holdQuery = `?sort=${sort}&q=${q}`;
@@ -29,6 +30,7 @@ class SiteController{
                 holdQuery = `?q=${q}`;
             }
         }else if(sort) {
+            //conditionFind = { status: 'approved' };
             conditionSort = {[sort]: -1}; 
             holdQuery = `?sort=${sort}`;
         }
@@ -42,7 +44,8 @@ class SiteController{
         }
         Promise.all([
             User.findById({_id: userId}),
-            Post.find(conditionFind).skip(0).limit(page_size).sort(conditionSort), // todo: check lại thông số skip() 
+            Post.find(conditionFind).limit(page_size).sort(conditionSort),
+            // Post.find(conditionFind).skip(0).limit(page_size).sort(conditionSort), // todo: check lại thông số skip() 
         ]).then(([user, posts]) => {
             // console.log(posts);
             res.render('home', {
@@ -63,7 +66,8 @@ class SiteController{
     // [GET] /page/:page
     async page(req, res, next){
         const q = req.query.q;
-        const sort = req.query.sort;
+        let sort = req.query.sort;
+        if(sort == 'date') sort = 'createdAt';
         let holdQuery = '';
         let conditionFind ={}, conditionSort={};
 
@@ -77,13 +81,14 @@ class SiteController{
                 holdQuery = `?q=${q}`;
             }
         } else if(sort) {
+            //conditionFind = { status: 'approved' };
             conditionSort = {[sort]: -1}; 
             holdQuery = `?sort=${sort}`;
         }
 
         const checkPage = parseInt(req.params.page);
         const userId = UserLocalStorage.ID;
-        const countDoc = await Post.countDocuments();
+        const countDoc = await Post.countDocuments();  //todo: chỉnh lại phân trang khi có tìm kiếm và sắp xếp
         let page = [];
         let countPage = countDoc / page_size;
         if(countDoc % page_size != 0) countPage += 1;

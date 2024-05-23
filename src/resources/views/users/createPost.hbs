@@ -1,7 +1,7 @@
 
 
-<div class="float-right clearfix">
-    <p id="notification" class="alert mt-5 mr-2 pl-5 pr-5 invisible" role="alert" style="z-index:; ">
+<div class="float-right clearfix " style="">
+    <p id="notification" class="alert mt-5 mr-2 pl-5 pr-5 invisible" role="alert">
         Tạo bài viết thành công!
     </p>
 </div>
@@ -30,7 +30,7 @@
             <div class="container m-2">
                 <div class="mr-3">
                     <h3 class="text-center " >Tạo bài đăng mới</h3>
-                    <form method="POST" action="/posts/store">
+                    <form method="POST" action="/posts/store" onsubmit="return validateContentForm()" >
                         <div class="form-group">
                             <label for="title">Tiêu đề bài đăng <inline style="color: red;">(*)</inline></label>
                             <input type="text" class="form-control" id="title" name="title" required>
@@ -44,8 +44,9 @@
                             <input type="text" class="form-control" id="thumbnail" name="thumbnail" required>
                         </div>
                         <div class="form-group">
-                            <label for="content">Nội dung <inline style="color: red;">(*)</inline></label>
-                            <textarea class="form-control" id="contentHtml" name="contentHtml" rows="10" placeholder="Nội dung bài đăng" required></textarea>
+                            <label for="contentHtml">Nội dung <inline style="color: red;">(*)</inline></label>
+                            <textarea class="form-control" id="contentHtml" name="contentHtml" rows="10" style="display: none;"></textarea>
+                            <div id="contentTinymce"></div>
                         </div>
                         <button type="submit" class="btn btn-primary" >Tạo bài đăng</button>
                     </form>
@@ -55,19 +56,43 @@
         </div>
     </div>
 </div>
+<script src="/tinymce/tinymce.min.js"></script>
+<script type="text/javascript">
+  tinymce.init({
+    selector: '#contentTinymce',
+    license_key: 'gpl',
+    plugins: "textcolor code list autolink link lists",
+    toolbar1: " undo redo | styles | indent outdent | bullist numlist | code | link ",
+    toolbar2: "forecolor backcolor bold italic | alignleft aligncenter alignright justify ",
+    toolbar_mode: 'sliding',
+    link_default_target: '_blank',
 
+  });
+</script>
 <script>
     function showNotification(alerClass, message, duration) {
-    let notification = document.getElementById("notification");
-    notification.innerHTML = message;
-    notification.classList.add(alerClass);
-    notification.classList.remove("invisible");
-    notification.style.display = "block";
-    setTimeout(function(){
-        notification.classList.add("invisible");
-        notification.classList.remove(alerClass);
-        {{!-- notification.style.display = "none"; --}}
-    }, duration);
+        let notification = document.getElementById("notification");
+        notification.innerHTML = message;
+        notification.classList.add(alerClass);
+        notification.classList.remove("invisible");
+        notification.style.display = "block";
+        setTimeout(function(){
+            notification.classList.add("invisible");
+            notification.classList.remove(alerClass);
+            {{!-- notification.style.display = "none"; --}}
+        }, duration);
+    }
+
+    function validateContentForm() {
+        var content = tinymce.get('contentTinymce').getContent();
+
+        if (!content.trim()) {
+            alert('Vui lòng nhập nội dung bài đăng');
+            return false; // Ngăn form gửi đi
+        }
+         // Gán nội dung của trình soạn thảo vào textarea trước khi gửi form
+        document.getElementById('contentHtml').value = content;
+        return true; // Cho phép form gửi đi
     }
     
     {{#if resPost}}
@@ -80,12 +105,5 @@
 
 </script>
 
-<script src="/tinymce/tinymce.min.js"></script>
-<script type="text/javascript">
-  tinymce.init({
-    selector: '#contentHtml',
-    license_key: 'gpl'
 
-  });
-</script>
 

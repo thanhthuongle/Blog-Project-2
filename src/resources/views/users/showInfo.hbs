@@ -35,14 +35,14 @@
                 </div>
 
                 <div class="mb-3">
-                    <b>Tham gia từ: </b><span>{{user.createdAt}}</span>
+                    <b>Tham gia từ: </b><span>{{formatDateTime user.createdAt}}</span>
                 </div>
 
                 <div>
                     <b>Tổng bài đăng: </b> <span>{{user.totalPost}}</span><br>
                     <b style="color: rgb(9, 207, 9);">Bài đăng đã duyệt: </b> <span>{{user.approvedPost}}</span><br>
                     <b style="color: rgb(201, 201, 8);">Bài đăng chờ duyệt: </b> <span>{{user.pendingPost}}</span><br>
-                    <b style="color: rgb(183, 12, 12);">Bài đăng bị từ chối: </b> <span>{{user.rejectPost}}</span><br>
+                    <b style="color: rgb(183, 12, 12);">Bài đăng bị từ chối: </b> <span>{{user.rejectedPost}}</span><br>
                 </div>
 
                 <div class="text-center mt-5 mb-3">

@@ -89,7 +89,7 @@ class PostsController{
                         })
                     });
             
-            // tính toán thêm về TH lày 
+            // todo: tính toán thêm về TH lày 
             }).catch(err => {
                 postStatus = false;
                 console.log('Tạo bài viết thất bại do id người dùng không hợp lệ!', err);
@@ -116,11 +116,13 @@ class PostsController{
             const user = await User.findOne({_id: UserLocalStorage.ID});
             let dataModify = req.body;
             dataModify.content = stripHtml(dataModify.contentHtml);
-            await Post.updateOne({_id: req.params.id, userID: UserLocalStorage.ID}, dataModify);
+            const updatePost= await Post.updateOne({_id: req.params.id, userID: UserLocalStorage.ID}, dataModify);
             const posts = await Post.find({userID: UserLocalStorage.ID});
             res.render('users/showPosts', {
                 user: mongooseToObject(user),
                 posts: mutipleMongooseToObject(posts),
+                resUpdatePost: true,
+                updatePostStatus: updatePost.acknowledged,
             }); 
         } catch (error) {
             next(error);
@@ -128,6 +130,7 @@ class PostsController{
     }
 
     // [DELETE] posts/:id
+
     async delete(req, res, next){
         try {
             const user = await User.findOne({_id: UserLocalStorage.ID});
@@ -150,9 +153,18 @@ class PostsController{
                 res.render('users/showPosts', {
                     user: mongooseToObject(user),
                     posts: mutipleMongooseToObject(posts),
+                    resDeletePost: true,
+                    deletePostStatus: true,
                 });
             } else {
-                res.status(404).send("No post was deleted");
+                // res.status(404).send("No post was deleted");
+                const posts = await Post.find({userID: UserLocalStorage.ID});
+                res.render('users/showPosts', {
+                    user: mongooseToObject(user),
+                    posts: mutipleMongooseToObject(posts),
+                    resDeletePost: true,
+                    deletePostStatus: false,
+                });
             }
         } catch (error) {
             next(error);
