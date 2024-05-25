@@ -3,6 +3,7 @@ const router = express.Router();
 
 const managersController = require('../app/controllers/ManagersController');
 
+router.delete('/:managerID/deletePost/:postID/:statusPost', managersController.deletePost);
 router.get(['/', '/pendingPost'], managersController.showPending);
 router.get('/approvedPost', managersController.showApproved);
 router.get('/rejectedPost', managersController.showRejected);

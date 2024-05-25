@@ -46,12 +46,14 @@
         <nav aria-label="Page navigation example">
             <ul class="pagination mt-5" style="margin-bottom: 80px;">
                 {{#if noHome}}
-                <li class="page-item"><a class="page-link" {{#if (checkPageHome (diff checkPage 1))}}href="/{{holdQuery}}"{{else}}href="/page/{{#diff checkPage 1}}{{/diff}}/{{holdQuery}}"{{/if}}>Previous</a></li>
+                    <li class="page-item"><a class="page-link" {{#if (checkPageHome (diff checkPage 1))}}href="/{{holdQuery}}"{{else}}href="/page/{{#diff checkPage 1}}{{/diff}}/{{holdQuery}}"{{/if}}>Previous</a></li>
                 {{/if}}
                 {{#each page}}
-                <li class="page-item" ><a class="page-link" {{#if (checkPageHome this.ind)}}href='/{{this.holdQuery}}'{{else}}href='/page/{{this.ind}}/{{this.holdQuery}}'{{/if}} >{{this.ind}}</a></li>
+                    <li class="page-item" ><a class="page-link" {{#if (checkPageHome this.ind)}}href='/{{this.holdQuery}}'{{else}}href='/page/{{this.ind}}/{{this.holdQuery}}'{{/if}} >{{this.ind}}</a></li>
                 {{/each}}
-                <li class="page-item"><a class="page-link" href="/page/{{#sum checkPage 1}}{{/sum}}/{{holdQuery}}">Next</a></li>
+                {{#if noEnd}}
+                    <li class="page-item"><a class="page-link" href="/page/{{#sum checkPage 1}}{{/sum}}/{{holdQuery}}">Next</a></li>
+                {{/if}}
             </ul>
         </nav>
     </div>
@@ -93,7 +95,7 @@
                     </a>
                 </div>
                 <div class="col-6">
-                    <a href="mailto:lethanhthuongldp@gmail.com" title="my facebook account" target="_blank" style="text-decoration: none;">
+                    <a href="mailto:lethanhthuongldp@gmail.com" title="my mail account" target="_blank" style="text-decoration: none;">
                         <img src="/image/mailIcon.png" alt="" style="width: 20%; height:auto; aspect-ratio: 1/1; ">
                         <span class="ml-1 align-middle">Mail</span>
                     </a>
@@ -131,6 +133,7 @@
         // Submit the sort form
         document.forms['sort'].submit();
     }
+
 </script>
 
 

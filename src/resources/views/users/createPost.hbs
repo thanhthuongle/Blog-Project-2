@@ -29,7 +29,7 @@
         <div class="border rounded float-right mb-4" style="width: 80%;">
             <div class="container m-2">
                 <div class="mr-3">
-                    <h3 class="text-center " >Tạo bài đăng mới</h3>
+                    <h3 class="text-center " >Tạo bài đăng mới  </h3>
                     <form method="POST" action="/posts/store" onsubmit="return validateContentForm()" >
                         <div class="form-group">
                             <label for="title">Tiêu đề bài đăng <inline style="color: red;">(*)</inline></label>
@@ -56,14 +56,14 @@
         </div>
     </div>
 </div>
-<script src="/tinymce/tinymce.min.js"></script>
+<script src="/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
 <script type="text/javascript">
   tinymce.init({
     selector: '#contentTinymce',
     license_key: 'gpl',
-    plugins: "textcolor code list autolink link lists",
+    plugins: " code list autolink link lists",
     toolbar1: " undo redo | styles | indent outdent | bullist numlist | code | link ",
-    toolbar2: "forecolor backcolor bold italic | alignleft aligncenter alignright justify ",
+    toolbar2: "forecolor backcolor bold italic underline| alignleft aligncenter alignright justify ",
     toolbar_mode: 'sliding',
     link_default_target: '_blank',
 
@@ -97,7 +97,7 @@
     
     {{#if resPost}}
     {{#if postStatus}}
-        showNotification("alert-success","Tạo bài viết thành công!",2000);
+        showNotification("alert-success","Tạo bài viết thành công!",3000);
     {{else}}
         showNotification("alert-danger", "Tạo bài viết thất bại!!!",3000);
     {{/if}}

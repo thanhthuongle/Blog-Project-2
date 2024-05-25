@@ -37,6 +37,7 @@ class UsersController{
             res.render('users/createPost', {
                 user: mongooseToObject(user),
                 posts: mutipleMongooseToObject(posts),
+                // messages: req.flash('info'),
             })
         })
     }

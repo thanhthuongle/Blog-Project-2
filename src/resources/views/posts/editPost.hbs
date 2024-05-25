@@ -21,27 +21,20 @@
         </div>
         <div class="form-group">
             <label for="contentHtml">Nội dung <inline style="color: red;">(*)</inline></label>
-            <textarea class="form-control" id="contentHtml" name="contentHtml"  rows="10">{{post.contentHtml}}</textarea>
+            <textarea class="form-control" id="contentHtml" name="contentHtml"  rows="10" style="display: none;"></textarea>
+            <div id="contentTinymce">{{{post.contentHtml}}}</div>
         </div>
         <button type="submit" class="btn btn-primary">Lưu lại</button>
     </form>
+    <a href="/users/{{user._id}}/posts"><button class="btn btn-danger mt-1 mb-4">Hủy</button></a>
     <p class="mb-4"><inline style="color: red;">Chú ý: </inline>Người dùng bắt buộc phải cung cấp thông tin đối với các trường có  <inline style="color: red;">(*)</inline></p>
 </div>
 
-<script>
-    function validateContentForm() {
-        var content = document.getElementById('contentHtml').value;
-        if (!content.trim()) {
-            alert('Vui lòng nhập nội dung bài đăng');
-            return false; // Ngăn form gửi đi
-        }
-        return true; // Cho phép form gửi đi
-    }
-</script>
+
 <script src="/tinymce/tinymce.min.js"></script>
 <script type="text/javascript">
   tinymce.init({
-    selector: '#contentHtml',
+    selector: '#contentTinymce',
     license_key: 'gpl',
     plugins: "textcolor code list autolink link lists",
     toolbar1: " undo redo | styles | indent outdent | bullist numlist | code | link ",
@@ -50,4 +43,18 @@
     link_default_target: '_blank',
   });
 </script>
+<script>
+    function validateContentForm() {
+        var content = tinymce.get('contentTinymce').getContent();
+
+        if (!content.trim()) {
+            alert('Vui lòng nhập nội dung bài đăng');
+            return false; // Ngăn form gửi đi
+        }
+         // Gán nội dung của trình soạn thảo vào textarea trước khi gửi form
+        document.getElementById('contentHtml').value = content;
+        return true; // Cho phép form gửi đi
+    }
+</script>
+
 

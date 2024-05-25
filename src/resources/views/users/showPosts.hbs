@@ -53,9 +53,9 @@
                                 <td style= "color: {{#checkColorStatus this.status}}{{/checkColorStatus}};" >
                                     {{#checkStatus this.status}}{{/checkStatus}}
                                 </td>
-                                <td>{{this.updatedAt}}</td>
+                                <td>{{formatTime this.createdAt}}<br class="m-0">{{formatDate this.createdAt}}</td>
                                 <td>
-                                    <a href="/posts/{{this._id}}/edit" class="btn btn-link {{#if (checkStatusApprove this.status)}}disabled{{/if}}">Sửa</a>
+                                    <a href="/posts/{{this._id}}/edit" class="btn btn-link">Sửa</a>
                                 </td>
                                 <td>
                                     <a href="" class="btn btn-link" data-id="{{this._id}}" data-toggle="modal" data-target="#delete-post-modal">Xóa</a>

@@ -1,6 +1,7 @@
 const Post = require('../models/Post');
 const User = require('../models/User');
 const UserLocalStorage = require('../../config/acc/account');
+const ManagePage = require('../models/ManagePage');
 
 const {mutipleMongooseToObject} = require('../../util/mongoose');
 const {mongooseToObject} = require('../../util/mongoose');
@@ -10,7 +11,6 @@ class ManagersController{
     // [GET] ['/', '/pedingPost']
     async showPending(req, res, next){
         try{
-            const status = 'pending';
             const user = await User.findById({_id: UserLocalStorage.ID});
             user._id = user._id.toString();
             const posts = await Post.aggregate([
@@ -43,7 +43,6 @@ class ManagersController{
             res.render('managers/pendingPost', {
                 posts: mutipleMongooseToObject(posts),
                 user: mongooseToObject(user),
-                status: status,
             });
         } catch(error){
             next(error);
@@ -53,7 +52,6 @@ class ManagersController{
     // [GET] '/approvedPost'
     async showApproved(req, res, next){
         try{
-            const status = 'approved';
             const user = await User.findById({_id: UserLocalStorage.ID});
             user._id = user._id.toString();
             const posts = await Post.aggregate([
@@ -88,7 +86,6 @@ class ManagersController{
             res.render('managers/approvedPost', {
                 posts: mutipleMongooseToObject(posts),
                 user: mongooseToObject(user),
-                status: status,
             });
         } catch(error){
             next(error);
@@ -98,7 +95,6 @@ class ManagersController{
     // [GET] '/rejectedPost'
     async showRejected(req, res, next){
         try{
-            const status = 'rejected';
             const user = await User.findById({_id: UserLocalStorage.ID});
             user._id = user._id.toString();
             const posts = await Post.aggregate([
@@ -133,7 +129,6 @@ class ManagersController{
             res.render('managers/rejectedPost', {
                 posts: mutipleMongooseToObject(posts),
                 user: mongooseToObject(user),
-                status: status,
             });
         } catch(error){
             next(error);
@@ -146,17 +141,20 @@ class ManagersController{
             const post = await Post.findOne({_id: req.params.postID});
             const manager = await User.findOne({_id: req.params.managerID});
             const user = await User.findOne({_id: post.userID});
+            const managePage = await ManagePage.findOne({});
             let resApprove = false, approveStatus = false;
-            let status = 'pending';
             if(post.status == 'pending'){
                 post.status = 'approved';
                 user.approvedPost += 1;
                 user.pendingPost -= 1;
+                managePage.approvedPost += 1;
+                managePage.pendingPost -= 1;
                 post.reviewerID = manager._id.toString();
                 post.reviewerName = manager.name;
                 post.reviewTime = new Date();
                 await post.save();
                 await user.save();
+                await managePage.save();
             }
             if(post.status == 'approved'){
                 resApprove = true;
@@ -196,7 +194,6 @@ class ManagersController{
             res.render('managers/pendingPost', {
                 posts: mutipleMongooseToObject(posts),
                 user: mongooseToObject(user),
-                status: status,
                 resApprove: resApprove,
                 approveStatus: approveStatus,
             });
@@ -212,17 +209,20 @@ class ManagersController{
             const post = await Post.findOne({_id: req.params.postID});
             const manager = await User.findOne({_id: req.params.managerID});
             const user = await User.findOne({_id: post.userID});
+            const managePage = await ManagePage.findOne({});
             let resReject = false, rejectStatus = false;
-            let status = 'pending';
             if(post.status == 'pending'){
                 post.status = 'rejected';
                 user.rejectedPost += 1;
                 user.pendingPost -= 1;
+                managePage.rejectedPost += 1;
+                managePage.pendingPost -= 1;
                 post.reviewerID = manager._id.toString();
                 post.reviewerName = manager.name;
                 post.reviewTime = new Date();
                 await post.save();
                 await user.save();
+                await managePage.save();
             }
             if(post.status == 'rejected'){
                 resReject = true;
@@ -262,11 +262,68 @@ class ManagersController{
             res.render('managers/pendingPost', {
                 posts: mutipleMongooseToObject(posts),
                 user: mongooseToObject(user),
-                status: status,
                 resReject: resReject,
                 rejectStatus: rejectStatus,
             });
         }catch(error){
+            next(error);
+        }
+    }
+
+    // [DELETE] 'managers/:managerID/deletePost/:postID/:statusPost'
+
+    async deletePost(req, res, next){
+        console.log('managers/' + req.params.statusPost);
+        try {
+            let statusPost = 'pending';
+            if(req.params.statusPost == 'approvedPost'){
+                statusPost = 'approved';
+            } else if(req.params.statusPost == 'rejectedPost'){
+                statusPost = 'rejected';
+            }
+            const manager = await User.findOne({_id: req.params.managerID});
+            const post = await Post.findOne({_id: req.params.postID});
+            if (!post) {
+                res.status(404).send("Post not found");
+                return;
+            }
+            const user = await User.findOne({_id: post.userID});
+            const managePage = await ManagePage.findOne({});
+            const postDeleted = await Post.deleteOne({_id: req.params.postID});
+            if (postDeleted.deletedCount === 1) {
+                user.totalPost -= 1;
+                managePage.totalPost -= 1;
+                if(post.status == "pending"){
+                    managePage.pendingPost -= 1;
+                    user.pendingPost -= 1;
+                }else if(post.status == "approved"){
+                    managePage.approvedPost -= 1;
+                    user.approvedPost -= 1;
+                }else{
+                    managePage.rejectedPost -= 1;
+                    user.rejectedPost -= 1;
+                }
+                await user.save();
+                await managePage.save();
+                const posts = await Post.find({status: statusPost});
+                res.render('managers/' + req.params.statusPost, {
+                    user: mongooseToObject(manager),
+                    posts: mutipleMongooseToObject(posts),
+                    resDeletePost: true,
+                    deletePostStatus: true,
+                })
+                
+            } else {
+                res.status(404).send("No post was deleted");
+                // const posts = await Post.find({status: statusPost});
+                // res.render('managers/' + req.params.statusPost, {
+                //     user: mongooseToObject(manager),
+                //     posts: mutipleMongooseToObject(posts),
+                //     resDeletePost: true,
+                //     deletePostStatus: false,
+                // })
+            }
+        } catch (error) {
             next(error);
         }
     }

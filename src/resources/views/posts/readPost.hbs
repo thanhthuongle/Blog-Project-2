@@ -1,8 +1,9 @@
 <style>
-    #btn-submit-comment:hover{
-        background-color:#E4E6EB;
+    #btn-submit-comment:hover {
+        background-color: #E4E6EB;
     }
-    #btn-submit-comment:hover{
+
+    #btn-submit-comment:hover {
         background-color: #007BFF;
         color: white;
     }
@@ -14,32 +15,32 @@
     <div class="border-bottom">
         <h1 class="text-center mt-4 mb-4">{{post.title}}</h1>
         <h6>
-                <span>
-                    Author:&nbsp;{{user.name}}
-                </span>
-                
-                <span class="ml-2">
-                    | &nbsp;Date:
-                    {{formatDateTime post.createdAt}}
-                </span>
+            <span>
+                Author:&nbsp;{{user.name}}
+            </span>
+
+            <span class="ml-2">
+                | &nbsp;Date:
+                {{formatDateTime post.createdAt}}
+            </span>
         </h6>
         <br>
-        <div class="text-center" >
+        <div class="text-center">
             <img style="width: 100%; height: auto; max-height: 450px;" src="{{post.thumbnail}}" alt="">
         </div>
-        <div class="mt-4 text-wrap" >
+        <div class="mt-4 text-wrap">
             <div style="white-space: pre-line;">
                 {{#if post.contentHtml}}
-                    {{{post.contentHtml}}}
+                {{{post.contentHtml}}}
                 {{else}}
-                    {{post.content}}
+                {{post.content}}
                 {{/if}}
-                
+
             </div>
         </div>
     </div>
 
-{{!-- group like, share, comment button--}}
+    {{!-- group like, share, comment button--}}
     <div class="text-center mt-4" style="margin-bottom: 1rem; background-color: white;">
         <div class="row ">
             <div class="col-4">Like:&nbsp; <span>{{post.like}}</span> </div>
@@ -51,15 +52,17 @@
 
         <div class="row mt-1">
             <div class="col-4">
-                <button type="button"  id="btn-update-like" class="btn btn-light" style="width: 70%;" data-userID="{{user._id}}" data-postID="{{post._id}}" >
-                    <img src={{#if likeStatus}}"/image/likedIcon.png"{{else}}"/image/likeIcon.png"{{/if}} alt="" style="width:20px; height:auto;">
-                    <span class="align-middle">Thích</span>   
+                <button type="button" id="btn-update-like" class="btn btn-light" style="width: 70%;"
+                    data-userID="{{user._id}}" data-postID="{{post._id}}">
+                    <img src={{#if likeStatus}}"/image/likedIcon.png"{{else}}"/image/likeIcon.png"{{/if}} alt=""
+                        style="width:20px; height:auto;">
+                    <span class="align-middle">Thích</span>
                 </button>
             </div>
 
             <form method="POST" id="updateLike"></form>
             <script>
-                document.getElementById('btn-update-like').addEventListener('click', function() {
+                document.getElementById('btn-update-like').addEventListener('click', function () {
                     let userID = this.getAttribute('data-userID');
                     let postID = this.getAttribute('data-postID');
                     let form = document.getElementById('updateLike');
@@ -73,58 +76,116 @@
                 <a href="#comment">
                     <button type="button" class="btn btn-light" style="width: 70%;">
                         <img src="/image/commentIcon.png" alt="" style="width:20px; height:auto;">
-                        <span class="align-middle">Bình luận</span>   
+                        <span class="align-middle">Bình luận</span>
                     </button>
                 </a>
             </div>
             <div class="col-4">
-                <button type="button" class="btn btn-light" style="width: 70%; ">
+                <button type="button" class="btn btn-light" style="width: 70%; " data-toggle="modal"
+                    data-target="#exampleModal">
                     <img src="/image/shareIcon.png" alt="" style="width:20px; height:auto;">
-                    <span class="align-middle">Chia sẻ</span>   
+                    <span class="align-middle">Chia sẻ</span>
                 </button>
+
+            </div>
+        </div>
+
+        <!-- Modal show link to share post-->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Chia sẻ bài viết</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                        <div class="modal-body clearfix">
+                            <div>
+                                <span>Link bài đăng:</span><a id="textToCopy" href="http://localhost:3000/posts/{{post._id}}/" target="_blank">localhost:3000/posts/{{post._id}}</a>
+                            </div>
+                            <div class="float-right" id="copyButton">
+                                <button class="btn mt-3"><img src="/image/copy.png" alt="" style="width: 20px; height: 20px;"> <span id="alertCopy">Sao chép liên kết</sapn></button>
+                            </div>
+                        </div>
+                    <div class="modal-footer">
+                        <button type="button" id="btn-close-share" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        {{!-- <button type="button" class="btn btn-primary">Save changes</button> --}}
+                    </div>
+                </div>
             </div>
         </div>
 
         <hr>
     </div>
 
-{{!-- group user view comment --}}
+    {{!-- group user view comment --}}
     <div>
-        <b>
-            <a href="" class="link-secondary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Xem thêm bình luận</a>
-        </b>
+        <h4>Bình luận</h4>
         {{#each comments}}
-        <div class="mb-4">
-            <div class="border rounded mt-3" style="width: 100%; background-color: #E4E6EB;">
-                <div class="mt-2 ml-2 mr-2">
-                    <img src="{{this.userComment.[0].avatar}}" alt="" class="rounded-circle " style="width: 30px; height: 30px; ">
-                    <b class="align-middle">{{this.userComment.[0].name}}</b>
+        {{#if (limitComment @index)}}
+        <div class="showLessComment">
+            <div class="mt-4">
+                <div class="border rounded mt-3" style="width: 100%; background-color: #E4E6EB;">
+                    <div class="mt-2 ml-2 mr-2">
+                        <img src="{{this.userComment.[0].avatar}}" alt="" class="rounded-circle "
+                            style="width: 30px; height: 30px; ">
+                        <b class="align-middle">{{this.userComment.[0].name}}</b>
+                    </div>
+                    <p class="pt-3 pl-2 pr-2 pb-1">
+                        {{this.contentComment}}
+                    </p>
                 </div>
-                <p class="pt-3 pl-2 pr-2 pb-1">
-                    {{this.contentComment}}
-                </p>
             </div>
-        </div> 
-        {{/each}} 
+        </div>
+        {{/if}}
+        {{#unless (limitComment @index)}}
+        <div class="showAllComment" style="display: none">
+            <div class="mt-4">
+                <div class="border rounded mt-3" style="width: 100%; background-color: #E4E6EB;">
+                    <div class="mt-2 ml-2 mr-2">
+                        <img src="{{this.userComment.[0].avatar}}" alt="" class="rounded-circle "
+                            style="width: 30px; height: 30px; ">
+                        <b class="align-middle">{{this.userComment.[0].name}}</b>
+                    </div>
+                    <p class="pt-3 pl-2 pr-2 pb-1">
+                        {{this.contentComment}}
+                    </p>
+                </div>
+            </div>
+        </div>
+        {{/unless}}
+        {{/each}}
+
+        <div class="clearfix mt-4">
+            {{#unless (limitComment countComment)}}
+            <p id="toggleComments" class="btn float-right" style="font-weight: bold;">Xem thêm bình luận</p>
+            {{/unless}}
+        </div>
+
     </div>
 
-{{!-- group user write comment! --}}
-    <div class="mt-5 mb-5">
+    {{!-- group user write comment! --}}
+    <div class=" mb-5">
         <form method="POST" action="/comments/{{post._id}}/{{user._id}}">
-            <div class="form-group clearfix" >
+            <div class="form-group clearfix">
                 <div class="float-left " style="width: 6%;">
                     <img src="{{user.avatar}}" class="rounded-circle" alt="" style="width: 50px; height: 50px;">
                 </div>
-                <div class="float-left" style="width: 94%;"> 
+                <div class="float-left" style="width: 94%;">
                     <input type="hidden" name="userID" value="{{user._id}}">
                     <input type="hidden" name="postID" value="{{post._id}}">
-                    <textarea class="form-control" id="comment" rows="3" name="contentComment" style="background-color: #E4E6EB;" placeholder="Viết bình luận..." required></textarea>
-                    <button type="button" class="btn btn-secondary mr-4" style="margin-top: 0.8rem;" onclick="clearComment()" >
+                    <textarea class="form-control" id="comment" rows="3" name="contentComment"
+                        style="background-color: #E4E6EB;" placeholder="Viết bình luận..." required></textarea>
+                    <button type="button" class="btn btn-secondary mr-4" style="margin-top: 0.8rem;"
+                        onclick="clearComment()">
                         Hủy
                     </button>
-                    <button type="submit" id="btn-submit-comment" class="btn btn-light mr-4" style="margin-top: 0.8rem; ">
+                    <button type="submit" id="btn-submit-comment" class="btn btn-light mr-4"
+                        style="margin-top: 0.8rem; ">
                         Bình luận
-                        <img src="/image/sendIcon.png" alt="" style="width: 20px; height: 20px; margin-left: 5px;" class="text-center align-middle mx-auto">     
+                        <img src="/image/sendIcon.png" alt="" style="width: 20px; height: 20px; margin-left: 5px;"
+                            class="text-center align-middle mx-auto">
                     </button>
                 </div>
             </div>
@@ -140,12 +201,12 @@
 
 <script>
     // Lưu vị trí cuộn trước khi reload
-    window.addEventListener('beforeunload', function() {
+    window.addEventListener('beforeunload', function () {
         localStorage.setItem('scrollPosition', window.scrollY);
     });
 
     // Gán lại vị trí cuộn sau khi trang được tải lại
-    window.addEventListener('load', function() {
+    window.addEventListener('load', function () {
         var savedScrollPosition = localStorage.getItem('scrollPosition');
         if (savedScrollPosition) {
             window.scrollTo(0, savedScrollPosition);
@@ -155,4 +216,64 @@
 </script>
 
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        let showAllComments = false;
+        const toggleCommentsButton = document.getElementById('toggleComments');
 
+        toggleCommentsButton.addEventListener('click', function () {
+            showAllComments = !showAllComments;
+            const showAllCommentsSections = document.getElementsByClassName('showAllComment');
+
+            if (showAllComments) {
+                // Hiển thị tất cả comment
+                for (let i = 0; i < showAllCommentsSections.length; i++) {
+                    showAllCommentsSections[i].style.display = 'block';
+                }
+                // Thay đổi nội dung của button
+                toggleCommentsButton.textContent = "Hiện ít bình luận hơn";
+            } else {
+                // Ẩn bớt comment
+                for (let i = 0; i < showAllCommentsSections.length; i++) {
+                    showAllCommentsSections[i].style.display = 'none';
+                }
+                // Thay đổi nội dung của button
+                toggleCommentsButton.textContent = "Xem thêm bình luận";
+            }
+        });
+
+        let copied = false;
+        document.getElementById('copyButton').addEventListener('click', function() {
+            const textToCopy = document.getElementById('textToCopy').href;
+            
+            navigator.clipboard.writeText(textToCopy).then(function() {
+                if(!copied){
+                    const alertCopy = document.getElementById('alertCopy');
+                    alertCopy.textContent = 'Đã sao chép';   
+                    copied = true;
+                }
+            }).catch(function(err) {
+                alert('Oops, không thể sao chép', err);
+            });
+        });
+
+        document.getElementById('btn-close-share').addEventListener('click', function() {
+            copied = false;
+            const alertCopy = document.getElementById('alertCopy');
+            alertCopy.textContent = 'Sao chép liên kết';
+        });
+
+        const textToCopy =  document.getElementById('textToCopy').textContent;
+        document.getElementById('textToCopy').textContent = truncateString(textToCopy, 45);
+    })
+</script>
+
+<script>
+    function truncateString(str, num) {
+        if (str.length > num) {
+            return str.slice(0, num-3) + '...';
+        } else {
+            return str;
+        }
+    }
+</script>

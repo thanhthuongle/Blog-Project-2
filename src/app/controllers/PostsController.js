@@ -3,8 +3,11 @@ const User = require('../models/User');
 const Like = require('../models/Like');
 const Comment = require('../models/Comment');
 const UserLocalStorage = require('../../config/acc/account');
+const ManagePage = require('../models/ManagePage');
 const { mongooseToObject } = require('../../util/mongoose');
 const {mutipleMongooseToObject} = require('../../util/mongoose');
+
+const adminName = 'user1'; // Tên người dùng admin
 
 class PostsController{
     // [GET] /posts/{{this._id}}
@@ -48,6 +51,7 @@ class PostsController{
                 user: mongooseToObject(user),
                 post: mongooseToObject(post),
                 likeStatus: likeStatus,
+                countComment: comments.length,
                 
             })
         }catch(err){
@@ -57,12 +61,13 @@ class PostsController{
 
 
     // [POST] posts/store
-    store(req, res, next){
+    async store(req, res, next){
         const userID = UserLocalStorage.ID;
         const post = new Post(req.body);
         const content = stripHtml(post.contentHtml);
         post.content = content;
         let postStatus = false;
+        const managePage = await ManagePage.findOne({});
         User.findById({_id: userID})
             .then(user => {
                 post.userID = user._id;
@@ -72,7 +77,12 @@ class PostsController{
                         user.totalPost += 1;
                         user.pendingPost += 1;
                         user.save();
-                        postStatus = true;
+                        managePage.totalPost += 1;
+                        managePage.pendingPost += 1;
+                        managePage.save();
+                        postStatus = true; 
+                        // req.flash('info', 'THÀNH CÔNG!');
+                        // res.redirect('/');
                         res.render('users/createPost', {
                             user: mongooseToObject(user),
                             postStatus: postStatus,
@@ -116,7 +126,30 @@ class PostsController{
             const user = await User.findOne({_id: UserLocalStorage.ID});
             let dataModify = req.body;
             dataModify.content = stripHtml(dataModify.contentHtml);
-            const updatePost= await Post.updateOne({_id: req.params.id, userID: UserLocalStorage.ID}, dataModify);
+            const post = await Post.findOne({_id: req.params.id, userID: UserLocalStorage.ID});
+            const managePage = await ManagePage.findOne({});
+            const updatePost = await Post.updateOne({_id: req.params.id, userID: UserLocalStorage.ID}, dataModify);
+            if(updatePost.modifiedCount == 1){
+                if(post.status == 'approved'){
+                    post.status = 'pending';
+                    user.approvedPost -= 1;
+                    user.pendingPost += 1;
+                    managePage.approvedPost -= 1;
+                    managePage.pendingPost += 1;
+                    await post.save();
+                    await user.save();
+                    await managePage.save();
+                } else if(post.status == 'rejected'){
+                    post.status = 'pending';
+                    user.rejectedPost -= 1;
+                    user.pendingPost += 1;
+                    managePage.rejectedPost -= 1;
+                    managePage.pendingPost += 1;
+                    await post.save();
+                    await user.save();
+                    await managePage.save();
+                }
+            }
             const posts = await Post.find({userID: UserLocalStorage.ID});
             res.render('users/showPosts', {
                 user: mongooseToObject(user),
@@ -135,20 +168,27 @@ class PostsController{
         try {
             const user = await User.findOne({_id: UserLocalStorage.ID});
             const post = await Post.findOne({_id: req.params.id, userID: UserLocalStorage.ID});
+            const managePage = await ManagePage.findOne({});
             if (!post) {
                 res.status(404).send("Post not found");
                 return;
             }
             const postDeleted = await Post.deleteOne({_id: req.params.id, userID: UserLocalStorage.ID});
-            if (postDeleted.deletedCount === 1) {
+            if (postDeleted.deletedCount == 1) {
                 user.totalPost -= 1;
-                if(post.status == "pending") 
+                managePage.totalPost -= 1;
+                if(post.status == "pending") {
                     user.pendingPost -= 1;
-                else if(post.status == "approved")
+                    managePage.pendingPost -= 1;
+                }else if(post.status == "approved"){
                     user.approvedPost -= 1;
-                else 
+                    managePage.approvedPost -= 1;
+                }else {
                     user.rejectedPost -= 1;
+                    managePage.rejectedPost -= 1;
+                }
                 await user.save();
+                await managePage.save();
                 const posts = await Post.find({userID: UserLocalStorage.ID});
                 res.render('users/showPosts', {
                     user: mongooseToObject(user),
