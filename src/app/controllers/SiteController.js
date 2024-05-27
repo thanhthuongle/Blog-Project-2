@@ -76,13 +76,16 @@ class SiteController{
                     noEnd: noEnd,
                     q: q,
                     holdQuery: holdQuery,
-                    // messages: req.flash('info'),
                 })
             }).catch(next);
         }
         // res.render('home');
     }
 
+    // [GET] /sign_in     // đăng nhập
+    signIn(req, res){
+        res.render('auth/signIn');
+    }
 
     // [GET] /page/:page      // phân trang
     async page(req, res, next){

@@ -94,9 +94,8 @@
         document.getElementById('contentHtml').value = content;
         return true; // Cho phép form gửi đi
     }
-    
     {{#if resPost}}
-    {{#if postStatus}}
+    {{#if createPostStatus}}
         showNotification("alert-success","Tạo bài viết thành công!",3000);
     {{else}}
         showNotification("alert-danger", "Tạo bài viết thất bại!!!",3000);

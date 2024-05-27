@@ -3,9 +3,9 @@ const path = require('path');
 const handlebars = require('express-handlebars');
 const mongoose = require('mongoose');
 const methodOverride = require('method-override');
-// var flash = require('connect-flash');
-// const cookieParser = require('cookie-parser');
-// const session = require('express-session');
+var flash = require('connect-flash');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
 
 
 const route = require('./route');
@@ -15,14 +15,14 @@ const app = express();
 const port = 3000;
 
 
-// app.use(cookieParser('keyboard cat')); 
-// app.use(session({
-//   secret: 'your_secret_key', // Thêm secret
-//   resave: false,
-//   saveUninitialized: true,
-//   cookie: { maxAge: 60000 }
-// })); 
-// app.use(flash());
+app.use(cookieParser('keyboard cat'));
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { maxAge: 60000 }
+}));
+app.use(flash());
 app.use(
     express.urlencoded({
         extended: true,

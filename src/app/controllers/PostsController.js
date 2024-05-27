@@ -66,7 +66,6 @@ class PostsController{
         const post = new Post(req.body);
         const content = stripHtml(post.contentHtml);
         post.content = content;
-        let postStatus = false;
         const managePage = await ManagePage.findOne({});
         User.findById({_id: userID})
             .then(user => {
@@ -81,22 +80,15 @@ class PostsController{
                         managePage.pendingPost += 1;
                         managePage.save();
                         postStatus = true; 
-                        // req.flash('info', 'THÀNH CÔNG!');
-                        // res.redirect('/');
-                        res.render('users/createPost', {
-                            user: mongooseToObject(user),
-                            postStatus: postStatus,
-                            resPost: true,
-                        })
+                        req.flash('resPost', 'true');
+                        req.flash('createPostStatus', 'true');
+                        res.redirect('/users/'+post.userID+'/create');
                     })
                     .catch(err => {
-                        postStatus = false;
                         console.log('Tạo bài viết thất bại!', err);
-                        res.render('users/createPost', {
-                            user: mongooseToObject(user),
-                            postStatus: postStatus,
-                            resPost: true,
-                        })
+                        req.flash('resPost', 'true');
+                        req.flash('createPostStatus', 'false');
+                        res.redirect('/users/user._id/create');
                     });
             
             // todo: tính toán thêm về TH lày 
@@ -150,14 +142,14 @@ class PostsController{
                     await managePage.save();
                 }
             }
-            const posts = await Post.find({userID: UserLocalStorage.ID});
-            res.render('users/showPosts', {
-                user: mongooseToObject(user),
-                posts: mutipleMongooseToObject(posts),
-                resUpdatePost: true,
-                updatePostStatus: updatePost.acknowledged,
-            }); 
+
+            req.flash('resUpdatePost', 'true');
+            req.flash('updatePostStatus', updatePost.acknowledged.toString());
+            res.redirect('/users/'+UserLocalStorage.ID+'/posts');
         } catch (error) {
+            req.flash('resUpdatePost', 'true');
+            req.flash('updatePostStatus', 'false');
+            res.redirect('/users/'+UserLocalStorage.ID+'/posts');
             next(error);
         }
     }
@@ -189,24 +181,18 @@ class PostsController{
                 }
                 await user.save();
                 await managePage.save();
-                const posts = await Post.find({userID: UserLocalStorage.ID});
-                res.render('users/showPosts', {
-                    user: mongooseToObject(user),
-                    posts: mutipleMongooseToObject(posts),
-                    resDeletePost: true,
-                    deletePostStatus: true,
-                });
+                req.flash('resDeletePost', 'true');
+                req.flash('deletePostStatus', 'true');
+                res.redirect('/users/'+UserLocalStorage.ID+'/posts');
             } else {
-                // res.status(404).send("No post was deleted");
-                const posts = await Post.find({userID: UserLocalStorage.ID});
-                res.render('users/showPosts', {
-                    user: mongooseToObject(user),
-                    posts: mutipleMongooseToObject(posts),
-                    resDeletePost: true,
-                    deletePostStatus: false,
-                });
+                req.flash('resDeletePost', 'true');
+                req.flash('deletePostStatus', 'false');
+                res.redirect('/users/'+UserLocalStorage.ID+'/posts');
             }
         } catch (error) {
+            req.flash('resDeletePost', 'true');
+            req.flash('deletePostStatus', 'false');
+            res.redirect('/users/'+UserLocalStorage.ID+'/posts');
             next(error);
         }
     }

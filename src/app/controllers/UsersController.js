@@ -17,6 +17,10 @@ class UsersController{
 
     // [GET] users/:id/posts
     showPosts(req, res, next){
+        let resUpdatePost = req.flash('resUpdatePost')[0] == 'true' ? true : false;
+        let updatePostStatus = req.flash('updatePostStatus')[0] == 'true' ? true : false;
+        let resDeletePost = req.flash('resDeletePost')[0] == 'true' ? true : false;
+        let deletePostStatus = req.flash('deletePostStatus')[0] == 'true' ? true : false;
         Promise.all([
             User.findById({_id: req.params.id}),
             Post.find({userID: req.params.id}),
@@ -24,6 +28,10 @@ class UsersController{
             res.render('users/showPosts', {
                 user: mongooseToObject(user),
                 posts: mutipleMongooseToObject(posts),
+                resUpdatePost: resUpdatePost,
+                updatePostStatus: updatePostStatus,
+                resDeletePost: resDeletePost,
+                deletePostStatus: deletePostStatus,
             })
         })
     }
@@ -34,10 +42,13 @@ class UsersController{
             User.findById({_id: req.params.id}),
             Post.find({userId: req.params.id}),
         ]).then(([user, posts]) => {
+            let resPost = req.flash('resPost')[0] == 'true' ? true : false;
+            let createPostStatus = req.flash('createPostStatus')[0] == 'true' ? true : false;
             res.render('users/createPost', {
                 user: mongooseToObject(user),
                 posts: mutipleMongooseToObject(posts),
-                // messages: req.flash('info'),
+                resPost: resPost,
+                createPostStatus: createPostStatus,
             })
         })
     }

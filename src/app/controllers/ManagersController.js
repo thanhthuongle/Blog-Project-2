@@ -40,9 +40,21 @@ class ManagersController{
                     }
                 }
             ])
+            const resApprove = req.flash('resApprove')[0] == 'true' ? true : false;
+            const approveStatus = req.flash('approveStatus')[0] == 'true' ? true : false;
+            const resReject = req.flash('resReject')[0] == 'true' ? true : false;
+            const rejectStatus = req.flash('rejectStatus')[0] == 'true' ? true : false;
+            const resDeletePost = req.flash('resDeletePost')[0] == 'true' ? true : false;
+            const deletePostStatus = req.flash('deletePostStatus')[0] == 'true' ? true : false;
             res.render('managers/pendingPost', {
                 posts: mutipleMongooseToObject(posts),
                 user: mongooseToObject(user),
+                resApprove: resApprove,
+                approveStatus: approveStatus,
+                resReject: resReject,
+                rejectStatus: rejectStatus,
+                resDeletePost: resDeletePost,
+                deletePostStatus: deletePostStatus,
             });
         } catch(error){
             next(error);
@@ -83,9 +95,13 @@ class ManagersController{
                     }
                 }
             ])
+            const resDeletePost = req.flash('resDeletePost')[0] == 'true' ? true : false;
+            const deletePostStatus = req.flash('deletePostStatus')[0] == 'true' ? true : false;
             res.render('managers/approvedPost', {
                 posts: mutipleMongooseToObject(posts),
                 user: mongooseToObject(user),
+                resDeletePost: resDeletePost,
+                deletePostStatus: deletePostStatus,
             });
         } catch(error){
             next(error);
@@ -126,9 +142,13 @@ class ManagersController{
                     }
                 }
             ])
+            const resDeletePost = req.flash('resDeletePost')[0] == 'true' ? true : false;
+            const deletePostStatus = req.flash('deletePostStatus')[0] == 'true' ? true : false;
             res.render('managers/rejectedPost', {
                 posts: mutipleMongooseToObject(posts),
                 user: mongooseToObject(user),
+                resDeletePost: resDeletePost,
+                deletePostStatus: deletePostStatus,
             });
         } catch(error){
             next(error);
@@ -156,54 +176,26 @@ class ManagersController{
                 await user.save();
                 await managePage.save();
             }
+
+
             if(post.status == 'approved'){
-                resApprove = true;
-                approveStatus = true;
+                req.flash('resApprove', 'true');
+                req.flash('approveStatus', 'true');
             } else if(post.status == 'pending'){
-                resApprove = true;
-                approveStatus = false;
+                req.flash('resApprove', 'true');
+                req.flash('approveStatus', 'false');
             }
             
-            const posts = await Post.aggregate([
-                {
-                    $match: {status: 'pending'}
-                },
-                {
-                    $addFields: {
-                        userID: { $toObjectId: '$userID' } // Chuyển đổi kiểu dữ liệu của userID sang ObjectId
-                    }
-                }, 
-                {
-                    $lookup: {
-                        from: 'users',
-                        localField: 'userID',
-                        foreignField: '_id',
-                        as: 'userPost',
-                    }
-                },
-                {
-                    $project: {
-                        'title': 1,
-                        '_id': 1,
-                        'status': 1,
-                        'createdAt': 1,
-                        'userPost.name': 1,
-                    }
-                }
-            ])
-            res.render('managers/pendingPost', {
-                posts: mutipleMongooseToObject(posts),
-                user: mongooseToObject(user),
-                resApprove: resApprove,
-                approveStatus: approveStatus,
-            });
+            res.redirect('/managers/pendingPost');
         }catch(error){
+            req.flash('resApprove', 'true');
+            req.flash('approveStatus', 'false');
+            res.redirect('/managers/pendingPost');
             next(error);
         }
     }
 
     // [PUT] '/:managerID/reject/:postID'
-
     async rejectPost(req, res, next){
         try{
             const post = await Post.findOne({_id: req.params.postID});
@@ -225,53 +217,56 @@ class ManagersController{
                 await managePage.save();
             }
             if(post.status == 'rejected'){
-                resReject = true;
-                rejectStatus = true;
+                req.flash('resReject', 'true');
+                req.flash('rejectStatus', 'true');
             } else if(post.status == 'pending'){
-                resReject = true;
-                rejectStatus = false;
+                req.flash('resReject', 'true');
+                req.flash('rejectStatus', 'false');
             }
             
-            const posts = await Post.aggregate([
-                {
-                    $match: {status: 'pending'}
-                },
-                {
-                    $addFields: {
-                        userID: { $toObjectId: '$userID' } // Chuyển đổi kiểu dữ liệu của userID sang ObjectId
-                    }
-                }, 
-                {
-                    $lookup: {
-                        from: 'users',
-                        localField: 'userID',
-                        foreignField: '_id',
-                        as: 'userPost',
-                    }
-                },
-                {
-                    $project: {
-                        'title': 1,
-                        '_id': 1,
-                        'status': 1,
-                        'createdAt': 1,
-                        'userPost.name': 1,
-                    }
-                }
-            ])
-            res.render('managers/pendingPost', {
-                posts: mutipleMongooseToObject(posts),
-                user: mongooseToObject(user),
-                resReject: resReject,
-                rejectStatus: rejectStatus,
-            });
+            res.redirect('/managers/pendingPost');
+            // const posts = await Post.aggregate([
+            //     {
+            //         $match: {status: 'pending'}
+            //     },
+            //     {
+            //         $addFields: {
+            //             userID: { $toObjectId: '$userID' } // Chuyển đổi kiểu dữ liệu của userID sang ObjectId
+            //         }
+            //     }, 
+            //     {
+            //         $lookup: {
+            //             from: 'users',
+            //             localField: 'userID',
+            //             foreignField: '_id',
+            //             as: 'userPost',
+            //         }
+            //     },
+            //     {
+            //         $project: {
+            //             'title': 1,
+            //             '_id': 1,
+            //             'status': 1,
+            //             'createdAt': 1,
+            //             'userPost.name': 1,
+            //         }
+            //     }
+            // ])
+            // res.render('managers/pendingPost', {
+            //     posts: mutipleMongooseToObject(posts),
+            //     user: mongooseToObject(user),
+            //     resReject: resReject,
+            //     rejectStatus: rejectStatus,
+            // });
         }catch(error){
+            req.flash('resReject', 'true');
+            req.flash('rejectStatus', 'false');
+            res.redirect('/managers/pendingPost');
             next(error);
         }
     }
 
     // [DELETE] 'managers/:managerID/deletePost/:postID/:statusPost'
-
     async deletePost(req, res, next){
         console.log('managers/' + req.params.statusPost);
         try {
@@ -305,16 +300,23 @@ class ManagersController{
                 }
                 await user.save();
                 await managePage.save();
-                const posts = await Post.find({status: statusPost});
-                res.render('managers/' + req.params.statusPost, {
-                    user: mongooseToObject(manager),
-                    posts: mutipleMongooseToObject(posts),
-                    resDeletePost: true,
-                    deletePostStatus: true,
-                })
+                req.flash('resDeletePost', 'true');
+                req.flash('deletePostStatus', 'true');
+                res.redirect('/managers/' + req.params.statusPost);
+
+                // const posts = await Post.find({status: statusPost});
+                // res.render('managers/' + req.params.statusPost, {
+                //     user: mongooseToObject(manager),
+                //     posts: mutipleMongooseToObject(posts),
+                //     resDeletePost: true,
+                //     deletePostStatus: true,
+                // })
                 
             } else {
-                res.status(404).send("No post was deleted");
+                req.flash('resDeletePost', 'true');
+                req.flash('deletePostStatus', 'false');
+                res.redirect('/managers/' + req.params.statusPost);
+                // res.status(404).send("No post was deleted");
                 // const posts = await Post.find({status: statusPost});
                 // res.render('managers/' + req.params.statusPost, {
                 //     user: mongooseToObject(manager),
@@ -324,6 +326,9 @@ class ManagersController{
                 // })
             }
         } catch (error) {
+            req.flash('resDeletePost', 'true');
+            req.flash('deletePostStatus', 'false');
+            res.redirect('/managers/' + req.params.statusPost);
             next(error);
         }
     }
