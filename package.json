@@ -2,9 +2,6 @@
   "name": "web-blog-project-2",
   "version": "1.0.0",
   "main": "index.js",
-  "engines": {
-    "node": "20.x"
-  },
   "scripts": {
     "start": "nodemon src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
