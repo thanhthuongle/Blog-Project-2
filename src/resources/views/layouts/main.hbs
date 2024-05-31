@@ -11,7 +11,9 @@
 </head>
 <body style="background-color: #E4E6EB;">
     <div class="app">
-        {{> header}}
+        {{#unless authPage}}
+            {{> header}}
+        {{/unless}}
 
         {{{body}}}
 

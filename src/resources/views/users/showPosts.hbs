@@ -100,7 +100,7 @@
 
                             let btnDeletePost = document.getElementById('btn-delete-post');
                             btnDeletePost.onclick = function () {
-                                deleteForm.action = '/posts/' + postID + '?_method=DELETE';
+                                deleteForm.action = '/posts/' + postID + "/{{user._id}}" +'?_method=DELETE';
                                 deleteForm.submit();
                             }
                         });

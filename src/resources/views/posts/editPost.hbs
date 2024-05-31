@@ -6,7 +6,7 @@
         <h3>CẬP NHẬT BÀI ĐĂNG</h3>
     </div>
 
-    <form class="mt-4 mb-4" method="POST" action="/posts/{{post._id}}?_method=PUT" onsubmit="return validateContentForm()">
+    <form class="mt-4 mb-4" method="POST" action="/posts/{{post._id}}/{{user._id}}?_method=PUT" onsubmit="return validateContentForm()">
         <div class="form-group">
             <label for="title">Tiêu đề bài đăng <inline style="color: red;">(*)</inline></label>
             <input type="text" class="form-control" id="title" name="title" value="{{post.title}}" required>

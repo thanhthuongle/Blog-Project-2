@@ -64,7 +64,7 @@ app.engine('hbs', handlebars.engine({
             else return false;
         },  
         checkRoleAdmin: (a) => {
-            if(a == 'user') return true; // a đại diện cho tên của người quản lý
+            if(a == 'admin') return true; // a đại diện cho tên của người quản lý
             else return false;
         },
         formatTime: (datetime) => {

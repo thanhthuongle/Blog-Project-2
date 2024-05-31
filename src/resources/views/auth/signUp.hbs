@@ -1,0 +1,80 @@
+<div class="container mt-4 border rounded" style="background-color: white;">
+    <div class="text-center">
+        <div style="height: 64px"></div>
+        <a href="/">
+            <img src="image/logo.png" alt="" style="border-radius: 50%; width: 80px; height: 80px; text-decoration: none;">
+        </a>
+    </div>
+    {{!-- <div style="height: 64px"></div> --}}
+    <div class="container">
+        <div class="" style="padding: 35%; padding-top: 80px; padding-bottom: 150px;">
+            <h2 class="text-center mb-4" style="font-size: 32px;">Tạo tài khoản của bạn</h2>
+            <form action="/sign_up" method="POST" onsubmit="return validatePassword() ">
+                <div class="form-group">
+                    <label for="userNameInput" class="mb-1">User name</label>
+                    <input type="text" class="form-control" id="userNameInput" name="userNameInput" placeholder="Tên đăng nhập" required>
+                </div>
+                <div id="alert-username-err" style="color: red;"></div>
+                <div class="form-group">
+                    <label for="passwordInput" class="mb-1">Password</label>
+                    <input type="password" class="form-control password" id="passwordInput" name="passwordInput"  placeholder="Mật khẩu" required>
+                </div>
+                <div class="form-group">
+                    <label for="passworConfirmInput" class="mb-1">Password confirmation</label>
+                    <input type="password" class="form-control password" id="passworConfirmInput"  placeholder="Nhập lại mật khẩu" required>
+                </div>
+                <div id="alert-pass-err" style="color: red;"></div>
+                <div>
+                    <input type="checkbox"  id="toggleCheckbox"> Hiện mật khẩu
+                </div>
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-success">Đăng ký</button>
+                </div>
+                <div class="text-center mt-2 ">
+                    <p>Bạn đã có tài khoản?<span><a href="/sign_in">Đăng nhập</a></span></p>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+   <script>
+        function validatePassword(){
+            const password = document.getElementById('passwordInput').value;
+            const confirmPassword = document.getElementById('passworConfirmInput').value;
+            if(password == confirmPassword){
+                return true;
+            } else{
+                // mat khau va mat khau xac nhan khong khop
+                document.getElementById('alert-pass-err').textContent = 'Mật khẩu và mật khẩu xác nhận không khớp!';
+                document.getElementById('alert-pass-err').style.marginTop = '-10px';
+                document.getElementById('alert-pass-err').style.marginBottom = '8px';
+                return false;
+            }
+        }
+        document.getElementById('toggleCheckbox').addEventListener('change', function() {
+            var passwordInput = document.getElementById('passwordInput');
+            const passworConfirmInput = document.getElementById('passworConfirmInput');
+            if (this.checked) {
+                passwordInput.type = 'text';
+                passworConfirmInput.type = 'text';
+            } else {
+                passwordInput.type = 'password';
+                passworConfirmInput.type = 'password';
+            }
+        });
+        
+        
+    </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        {{#if userName}} 
+            document.getElementById('userNameInput').value = "{{userName}}";
+            document.getElementById('alert-username-err').textContent = 'Tên đăng nhập đã tồn tại!';
+            document.getElementById('alert-username-err').style.marginTop = '-10px';
+            document.getElementById('alert-username-err').style.marginBottom = '8px';
+        {{/if}}
+    });
+</script>

@@ -63,6 +63,10 @@
             <form method="POST" id="updateLike"></form>
             <script>
                 document.getElementById('btn-update-like').addEventListener('click', function () {
+                    {{#unless user}}
+                        alertNotSignIn();
+                        return;
+                    {{/unless}}
                     let userID = this.getAttribute('data-userID');
                     let postID = this.getAttribute('data-postID');
                     let form = document.getElementById('updateLike');
@@ -100,16 +104,21 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                        <div class="modal-body clearfix">
-                            <div>
-                                <span>Link bài đăng:</span><a id="textToCopy" href="http://localhost:3000/posts/{{post._id}}/" target="_blank">localhost:3000/posts/{{post._id}}</a>
-                            </div>
-                            <div class="float-right" id="copyButton">
-                                <button class="btn mt-3"><img src="/image/copy.png" alt="" style="width: 20px; height: 20px;"> <span id="alertCopy">Sao chép liên kết</sapn></button>
-                            </div>
+                    <div class="modal-body clearfix">
+                        <div>
+                            <span>Link bài đăng:</span><a id="textToCopy"
+                                href="http://localhost:3000/posts/{{post._id}}/"
+                                target="_blank">localhost:3000/posts/{{post._id}}</a>
                         </div>
+                        <div class="float-right" id="copyButton">
+                            <button class="btn mt-3"><img src="/image/copy.png" alt=""
+                                    style="width: 20px; height: 20px;"> <span id="alertCopy">Sao chép liên kết</sapn>
+                                    </button>
+                        </div>
+                    </div>
                     <div class="modal-footer">
-                        <button type="button" id="btn-close-share" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" id="btn-close-share" class="btn btn-secondary"
+                            data-dismiss="modal">Close</button>
                         {{!-- <button type="button" class="btn btn-primary">Save changes</button> --}}
                     </div>
                 </div>
@@ -167,10 +176,14 @@
 
     {{!-- group user write comment! --}}
     <div class=" mb-5">
-        <form method="POST" action="/comments/{{post._id}}/{{user._id}}">
+        <form method="POST"  {{#if user}} action="/comments/{{post._id}}/{{user._id}}" {{else}} onsubmit="return alertNotSignIn()" {{/if}}>
             <div class="form-group clearfix">
                 <div class="float-left " style="width: 6%;">
-                    <img src="{{user.avatar}}" class="rounded-circle" alt="" style="width: 50px; height: 50px;">
+                    {{#if user}}
+                        <img src="{{user.avatar}}" class="rounded-circle" alt="" style="width: 50px; height: 50px;">
+                    {{else}}
+                        <img src="https://scontent-hkg1-1.xx.fbcdn.net/v/t1.30497-1/143086968_2856368904622192_1959732218791162458_n.png?stp=cp0_dst-png_p40x40&_nc_cat=1&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeH1381gwedxTXsiC0Xeo-peso2H55p0AlGyjYfnmnQCUZMMj6EYcOio77m1_ChBpA-PE96D0YrlnrqfxkZsoNJ7&_nc_ohc=C0FEU6wOyRwQ7kNvgH2sHTS&_nc_ht=scontent-hkg1-1.xx&oh=00_AfBOJFDY-DObJDdTjF-QOQN-bF8QsZ3bgayRykaMFJNcRA&oe=665EBA78" class="rounded-circle" alt="" style="width: 50px; height: 50px;">
+                    {{/if}}
                 </div>
                 <div class="float-left" style="width: 94%;">
                     <input type="hidden" name="userID" value="{{user._id}}">
@@ -197,6 +210,33 @@
             }
         </script>
     </div>
+
+    <!-- Modal show alert when not sign in-->
+        <div class="modal fade" id="alertNotSignIn" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Bạn chưa đăng nhập</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body clearfix">
+                        <div>
+                            Bạn cần đăng nhập để thực hiện thao tác này!
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="btn-close-alert-not-signIn" class="btn btn-secondary"
+                            data-dismiss="modal">Close</button>
+                        <a href="/sign_in" style="text-decoration: none;">
+                            <button type="button" class="btn btn-primary">Đăng nhập</button>
+                        </a> 
+                        {{!-- <button type="button" class="btn btn-primary">Save changes</button> --}}
+                    </div>
+                </div>
+            </div>
+        </div>
 </div>
 
 <script>
@@ -221,49 +261,52 @@
         let showAllComments = false;
         const toggleCommentsButton = document.getElementById('toggleComments');
 
-        toggleCommentsButton.addEventListener('click', function () {
-            showAllComments = !showAllComments;
-            const showAllCommentsSections = document.getElementsByClassName('showAllComment');
+        if (toggleCommentsButton) {
+            toggleCommentsButton.addEventListener('click', function () {
+                showAllComments = !showAllComments;
+                const showAllCommentsSections = document.getElementsByClassName('showAllComment');
 
-            if (showAllComments) {
-                // Hiển thị tất cả comment
-                for (let i = 0; i < showAllCommentsSections.length; i++) {
-                    showAllCommentsSections[i].style.display = 'block';
+                if (showAllComments) {
+                    // Hiển thị tất cả comment
+                    for (let i = 0; i < showAllCommentsSections.length; i++) {
+                        showAllCommentsSections[i].style.display = 'block';
+                    }
+                    // Thay đổi nội dung của button
+                    toggleCommentsButton.textContent = "Hiện ít bình luận hơn";
+                } else {
+                    // Ẩn bớt comment
+                    for (let i = 0; i < showAllCommentsSections.length; i++) {
+                        showAllCommentsSections[i].style.display = 'none';
+                    }
+                    // Thay đổi nội dung của button
+                    toggleCommentsButton.textContent = "Xem thêm bình luận";
                 }
-                // Thay đổi nội dung của button
-                toggleCommentsButton.textContent = "Hiện ít bình luận hơn";
-            } else {
-                // Ẩn bớt comment
-                for (let i = 0; i < showAllCommentsSections.length; i++) {
-                    showAllCommentsSections[i].style.display = 'none';
-                }
-                // Thay đổi nội dung của button
-                toggleCommentsButton.textContent = "Xem thêm bình luận";
-            }
-        });
+            });
+        }
+
 
         let copied = false;
-        document.getElementById('copyButton').addEventListener('click', function() {
+        document.getElementById('copyButton').addEventListener('click', function () {
             const textToCopy = document.getElementById('textToCopy').href;
-            
-            navigator.clipboard.writeText(textToCopy).then(function() {
-                if(!copied){
+
+            navigator.clipboard.writeText(textToCopy).then(function () {
+                if (!copied) {
                     const alertCopy = document.getElementById('alertCopy');
-                    alertCopy.textContent = 'Đã sao chép';   
+                    alertCopy.textContent = 'Đã sao chép';
                     copied = true;
                 }
-            }).catch(function(err) {
+            }).catch(function (err) {
                 alert('Oops, không thể sao chép', err);
             });
         });
 
-        document.getElementById('btn-close-share').addEventListener('click', function() {
+        document.getElementById('btn-close-share').addEventListener('click', function () {
             copied = false;
             const alertCopy = document.getElementById('alertCopy');
             alertCopy.textContent = 'Sao chép liên kết';
         });
 
-        const textToCopy =  document.getElementById('textToCopy').textContent;
+        const textToCopy = document.getElementById('textToCopy').textContent;
         document.getElementById('textToCopy').textContent = truncateString(textToCopy, 45);
     })
 </script>
@@ -271,9 +314,15 @@
 <script>
     function truncateString(str, num) {
         if (str.length > num) {
-            return str.slice(0, num-3) + '...';
+            return str.slice(0, num - 3) + '...';
         } else {
             return str;
         }
+    }
+
+    function alertNotSignIn(){
+        var myModal = new bootstrap.Modal(document.getElementById('alertNotSignIn'));
+        myModal.show();
+        event.preventDefault();
     }
 </script>

@@ -30,7 +30,7 @@
             <div class="container m-2">
                 <div class="mr-3">
                     <h3 class="text-center " >Tạo bài đăng mới  </h3>
-                    <form method="POST" action="/posts/store" onsubmit="return validateContentForm()" >
+                    <form method="POST" action="/posts/{{user._id}}/store" onsubmit="return validateContentForm()" >
                         <div class="form-group">
                             <label for="title">Tiêu đề bài đăng <inline style="color: red;">(*)</inline></label>
                             <input type="text" class="form-control" id="title" name="title" required>
