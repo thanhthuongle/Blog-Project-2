@@ -18,13 +18,14 @@ class PostsController{
     // [GET] /posts/{{this._id}}    // doc bai viet co id = this._id
     async show(req, res, next){
         const userID = UserLocalStorage.getID();
-        let post, comments, likeStatus;
+        let post, comments, likeStatus, author;
         try{// tim thong tin bai viet va comment cua bai viet
             post = await Post.findById({_id: req.params.id});
             if(!post) {
                 console.log('Không tìm thấy bài viết!');
                 res.redirect('/');
             } else{
+                author = await User.findById({_id: post.userID});
                 comments = await Comment.aggregate([
                     {
                         $match: {postID: req.params.id}
@@ -72,6 +73,7 @@ class PostsController{
                         comments: comments,
                         likeStatus: likeStatus,
                         countComment: comments.length,
+                        author: mongooseToObject(author),
                     })
                 }else{
                     localStorage.setItem('SGHBUserID', ''); // Xóa dữ liệu trong localStorage
@@ -81,6 +83,7 @@ class PostsController{
                         comments: comments,
                         likeStatus: likeStatus,
                         countComment: comments.length,
+                        author: mongooseToObject(author),
                     })
                 }
             }catch(err){
@@ -94,6 +97,7 @@ class PostsController{
                 comments: comments,
                 likeStatus: likeStatus,
                 countComment: comments.length,   
+                author: mongooseToObject(author),
             })
         }
     }

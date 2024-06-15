@@ -43,6 +43,12 @@
                             <label for="thumbnail">URL Ảnh đại diện <inline style="color: red;">(*)</inline></label>
                             <input type="text" class="form-control" id="thumbnail" name="thumbnail" required>
                         </div>
+                        <dir style="margin: 0px; padding: 0px; margin-bottom: 20px;">
+                            <p>Preview</p>
+                            <div class="text-center">
+                                <img src="" alt="Preview thumbnail image" id="thumbnailPreview"  style="max-width: 85%; min-height: 100px;">
+                            </div>
+                        </dir>
                         <div class="form-group">
                             <label for="contentHtml">Nội dung <inline style="color: red;">(*)</inline></label>
                             <textarea class="form-control" id="contentHtml" name="contentHtml" rows="10" style="display: none;"></textarea>
@@ -102,6 +108,15 @@
     {{/if}}
     {{/if}}
 
+</script>
+
+<script>
+    const thumbnailInput = document.getElementById('thumbnail');
+    const Preview = document.getElementById('thumbnailPreview');
+
+    thumbnailInput.addEventListener('input', function() {
+        Preview.src = thumbnailInput.value;
+    });
 </script>
 
 
