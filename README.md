@@ -8,23 +8,6 @@ Blog chia sẻ kiến thức cộng đồng là một website cung cấp kiến 
 - Xem các bài viết blog
 - Bình luận trên các bài viết blog
 
-## Cấu Trúc Dự Án
-Web-Blog-Project-2/
-│
-├── .git/ # Kho Git
-├── src/ # Mã nguồn
-│ ├── components/ # Các thành phần React
-│ ├── pages/ # Các trang
-│ ├── App.js # Thành phần ứng dụng chính
-│ ├── index.js # Điểm bắt đầu
-│ └── ... # Các tệp nguồn khác
-├── public/ # Tài sản công khai
-│ ├── index.html # Mẫu HTML
-│ └── ... # Các tài sản công khai khác
-├── package.json # Metadata và các phụ thuộc của dự án
-├── README.md # Tài liệu dự án
-└── ... # Các tệp dự án khác
-
 ## Cài Đặt
 
 1. **Clone kho lưu trữ**
